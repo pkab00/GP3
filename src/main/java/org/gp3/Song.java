@@ -22,6 +22,18 @@ public class Song implements Playable {
         extractMetadata();
     }
 
+    @Override
+    public String toString() {
+        String output = "";
+        output += "Title: " + title + "\n";
+        output += "Artist: " + artist + "\n";
+        output += "Album: " + album + "\n";
+        output += "Genre: " + genre + "\n";
+        output += "Year: " + year + "\n";
+        output += "Duration: " + durationMillis + "\n";
+        return output;
+    }
+
     private void extractMetadata(){
         try{
             InputStream inputStream = new FileInputStream(new File(filePath));
