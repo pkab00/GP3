@@ -36,3 +36,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Audio Files ###
+src/test/test_audio
+*.mp3
+*.wav
