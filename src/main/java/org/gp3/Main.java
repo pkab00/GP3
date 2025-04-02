@@ -4,11 +4,26 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        String fullPath = "D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - Klaxon.mp3";
-        Song klaxon = new Song(fullPath);
-        System.out.println(klaxon);
+        Song hann = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - HANN (Alone).mp3");
+        Song fate = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - Fate.mp3");
+        Song klaxon = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - Klaxon.mp3");
 
         ArrayList<Playable> songs = new ArrayList<>();
+        songs.add(hann);
+        songs.add(fate);
         songs.add(klaxon);
+
+        int sec = 60;
+
+        AudioPlayer player = new AudioPlayer(songs);
+        for(int i = 0; i < songs.size(); i++, player.stop(), player.toNext()){
+            player.play();
+            System.out.println(songs.get(i));
+            try {
+                Thread.sleep(sec*1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

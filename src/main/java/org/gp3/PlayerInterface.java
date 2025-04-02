@@ -9,11 +9,9 @@ public interface PlayerInterface {
     void toNext();
     void toPrevious();
 
-    void setVolume(int volume);
+    void setVolume(double volume);
     void setLooping(boolean looping);
-    void setPosition(int position);
 
-    int getVolume();
+    double getVolume();
     boolean isLooping();
-    int getPosition();
 }

@@ -7,11 +7,12 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Song implements Playable {
-    private final String filePath;
+    private String filePath;
     private String title;
     private String artist;
     private String album;
@@ -20,10 +21,10 @@ public class Song implements Playable {
     private long durationMillis;
 
     public Song(String filePath) {
-        File file = new File(filePath);
-        if (!file.exists()) {
+        Path path = Paths.get(filePath);
+        if (!Files.exists(path)) {
             System.out.println("File not found: " + filePath);
-            filePath = null;
+            return;
         }
         this.filePath = filePath;
         extractMetadata();

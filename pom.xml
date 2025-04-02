@@ -42,18 +42,38 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>17.0.2</version>
+            <artifactId>javafx-base</artifactId>
+            <version>19.0.2</version> <!-- Замените на актуальную версию -->
         </dependency>
+        <!-- JavaFX Graphics -->
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>17.0.2</version>
+            <artifactId>javafx-graphics</artifactId>
+            <version>19.0.2</version> <!-- Замените на актуальную версию -->
         </dependency>
+        <!-- JavaFX Controls -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>19.0.2</version> <!-- Замените на актуальную версию -->
+        </dependency>
+        <!-- JavaFX Media -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>17.0.2</version>
+            <version>19.0.2</version> <!-- Замените на актуальную версию -->
+        </dependency>
+        <!-- JavaFX FXML (если нужно) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>19.0.2</version> <!-- Замените на актуальную версию -->
+        </dependency>
+        <!-- JavaFX Swing -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>19.0.2</version> <!-- Замените на актуальную версию -->
         </dependency>
     </dependencies>
 
