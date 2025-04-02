@@ -1,5 +1,6 @@
 package org.gp3;
 
+import javafx.application.Platform;
 import javafx.scene.media.*;
 import javafx.embed.swing.*;
 import javafx.util.Duration;
@@ -12,17 +13,29 @@ public class AudioPlayer implements PlayerInterface{
         new JFXPanel();
     }
 
-    private final PlayQueue playQueue;
+    private PlayQueue playQueue;
     private MediaPlayer mediaPlayer;
     private Playable current;
 
-    private boolean looping;
+    // TODO: not working
+    private final Runnable defaultNextSongBehaviour = () -> {
+        stop();
+        System.out.println("Moving to next song...");
+        toNext();
+        play();
+    };
+    private final Runnable repeatSongBehaviour = () -> {
+        stop();
+        play();
+    };
+    private Runnable nextSongBehaviour = defaultNextSongBehaviour;
 
     public AudioPlayer(ArrayList<Playable> songs){
-        this.playQueue = new PlayQueue(songs);
-        if(playQueue.hasNext()){
-            current = playQueue.next();
+        if(songs.isEmpty()){
+            return;
         }
+        this.playQueue = new PlayQueue(songs);
+        this.current = playQueue.next();
     }
 
     private String getCorrectURI(){
@@ -34,9 +47,15 @@ public class AudioPlayer implements PlayerInterface{
 
     @Override
     public void play() {
-        this.mediaPlayer = new MediaPlayer(new Media(getCorrectURI()));
-        this.mediaPlayer.play();
-        System.out.println("Playing: " + current.getFilePath());
+        if(mediaPlayer != null){
+            stop();
+        }
+        Platform.runLater(() -> {this.mediaPlayer = new MediaPlayer(new Media(getCorrectURI()));
+        this.mediaPlayer.setOnEndOfMedia(nextSongBehaviour);
+        this.mediaPlayer.setOnReady(() -> {
+            this.mediaPlayer.play();
+            System.out.println("Playing: " + current.getFilePath());
+        });});
     }
 
     @Override
@@ -56,7 +75,11 @@ public class AudioPlayer implements PlayerInterface{
 
     @Override
     public void stop() {
-        mediaPlayer.stop();
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
     }
 
     @Override
@@ -79,17 +102,7 @@ public class AudioPlayer implements PlayerInterface{
     }
 
     @Override
-    public void setLooping(boolean looping) {
-        this.looping = looping;
-    }
-
-    @Override
     public double getVolume() {
         return mediaPlayer.getVolume();
-    }
-
-    @Override
-    public boolean isLooping() {
-        return looping;
     }
 }

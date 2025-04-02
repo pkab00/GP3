@@ -4,12 +4,8 @@ import org.apache.tika.metadata.*;
 import org.apache.tika.parser.*;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 
 public class Song implements Playable {
     private String filePath;
@@ -18,7 +14,7 @@ public class Song implements Playable {
     private String album;
     private String genre;
     private String year;
-    private long durationMillis;
+    private double durationMillis;
 
     public Song(String filePath) {
         Path path = Paths.get(filePath);
@@ -38,7 +34,7 @@ public class Song implements Playable {
         output += "Album: " + album + "\n";
         output += "Genre: " + genre + "\n";
         output += "Year: " + year + "\n";
-        output += "Duration: " + durationMillis + "\n";
+        output += String.format("Duration: %.2f\n", durationMillis);
         return output;
     }
 
@@ -57,7 +53,7 @@ public class Song implements Playable {
             this.album = metadata.get("xmpDM:album");
             this.genre = metadata.get("xmpDM:genre");
             this.year = metadata.get("xmpDM:releaseDate");
-            this.durationMillis = Math.round(Double.parseDouble(metadata.get("xmpDM:duration")));
+            this.durationMillis = Double.parseDouble(metadata.get("xmpDM:duration"));
         } catch(Exception e){
             System.out.println("Parsing failed: " + e.getMessage());
             e.printStackTrace();
@@ -95,7 +91,7 @@ public class Song implements Playable {
     }
 
     @Override
-    public long getDurationMillis() {
+    public double getDurationMillis() {
         return durationMillis;
     }
 }

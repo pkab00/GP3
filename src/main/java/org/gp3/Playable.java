@@ -7,5 +7,5 @@ public interface Playable {
     String getAlbum();
     String getGenre();
     String getYear();
-    long getDurationMillis();
+    double getDurationMillis();
 }

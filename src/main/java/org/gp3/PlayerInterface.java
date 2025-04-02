@@ -10,8 +10,6 @@ public interface PlayerInterface {
     void toPrevious();
 
     void setVolume(double volume);
-    void setLooping(boolean looping);
 
     double getVolume();
-    boolean isLooping();
 }
