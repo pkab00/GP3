@@ -7,6 +7,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Paths;
 
 public class Song implements Playable {
     private final String filePath;
@@ -17,7 +19,12 @@ public class Song implements Playable {
     private String year;
     private long durationMillis;
 
-    public Song(String filePath){
+    public Song(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            System.out.println("File not found: " + filePath);
+            filePath = null;
+        }
         this.filePath = filePath;
         extractMetadata();
     }
@@ -52,6 +59,7 @@ public class Song implements Playable {
             this.durationMillis = Math.round(Double.parseDouble(metadata.get("xmpDM:duration")));
         } catch(Exception e){
             System.out.println("Parsing failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
