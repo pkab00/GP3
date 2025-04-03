@@ -9,33 +9,49 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class AudioPlayer implements PlayerInterface{
-    static {
-        new JFXPanel();
-    }
-
+    private static boolean jfxInitialized = false;
     private PlayQueue playQueue;
     private MediaPlayer mediaPlayer;
     private Playable current;
 
-    // TODO: not working
     private final Runnable defaultNextSongBehaviour = () -> {
-        stop();
-        System.out.println("Moving to next song...");
-        toNext();
+        if(playQueue.hasNext()){
+            System.out.println("AudioPlayer: Moving to next song...");
+            toNext();
+            play();
+        } else {
+            System.out.println("AudioPlayer: No more songs!");
+        }
+    };
+    private final Runnable repeatPlaylistBehaviour = () -> {
+        System.out.println("AudioPlayer: Repeating playlist...");
+        while(playQueue.hasPrevious()){
+            toPrevious();
+        }
         play();
     };
-    private final Runnable repeatSongBehaviour = () -> {
-        stop();
-        play();
-    };
-    private Runnable nextSongBehaviour = defaultNextSongBehaviour;
+    private final Runnable repeatSongBehaviour = this::play;
+    private Runnable nextSongBehaviour = repeatPlaylistBehaviour;
 
     public AudioPlayer(ArrayList<Playable> songs){
+        if(!jfxInitialized){
+            initializeJFX();
+        }
         if(songs.isEmpty()){
             return;
         }
         this.playQueue = new PlayQueue(songs);
         this.current = playQueue.next();
+        current = playQueue.next();
+        current = playQueue.next();
+        System.out.println("AudioPlayer: Current song: " + current.getFilePath());
+    }
+
+    private static void initializeJFX(){
+        new JFXPanel();
+        Platform.setImplicitExit(false);
+        jfxInitialized = true;
+        System.out.println("AudioPlayer: JFX initialized!");
     }
 
     private String getCorrectURI(){
@@ -54,31 +70,33 @@ public class AudioPlayer implements PlayerInterface{
         this.mediaPlayer.setOnEndOfMedia(nextSongBehaviour);
         this.mediaPlayer.setOnReady(() -> {
             this.mediaPlayer.play();
-            System.out.println("Playing: " + current.getFilePath());
+            System.out.println("AudioPlayer: Playing: " + current.getFilePath());
         });});
     }
 
     @Override
     public void pause() {
-        mediaPlayer.pause();
+        Platform.runLater(mediaPlayer::pause);
     }
 
     @Override
     public void resume() {
-        mediaPlayer.play();
+        Platform.runLater(mediaPlayer::play);
     }
 
     @Override
     public void rewind() {
-        mediaPlayer.seek(new Duration(0));
+        Platform.runLater(() -> mediaPlayer.seek(new Duration(0)));
     }
 
     @Override
     public void stop() {
         if(mediaPlayer != null){
-            mediaPlayer.stop();
-            mediaPlayer.dispose();
-            mediaPlayer = null;
+            Platform.runLater(() -> {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                mediaPlayer = null;
+            });
         }
     }
 
@@ -98,11 +116,16 @@ public class AudioPlayer implements PlayerInterface{
 
     @Override
     public void setVolume(double volume) {
-        mediaPlayer.setVolume(volume);
+        Platform.runLater(() -> mediaPlayer.setVolume(volume));
     }
 
     @Override
     public double getVolume() {
         return mediaPlayer.getVolume();
+    }
+
+    @Override
+    public Playable getPlaying() {
+        return current;
     }
 }

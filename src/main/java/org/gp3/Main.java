@@ -1,6 +1,6 @@
 package org.gp3;
 
-import javafx.application.Platform;
+import org.gp3.gui.SimpleTestGUI;
 
 import java.util.ArrayList;
 
@@ -15,11 +15,6 @@ public class Main {
         songs.add(hann);
         songs.add(klaxon);
 
-        AudioPlayer player = new AudioPlayer(songs);
-        player.play();
-        Thread.sleep(5000);
-        player.stop();
-        player.toNext();
-        player.play();
+        SimpleTestGUI gui = new SimpleTestGUI(songs);
     }
 }

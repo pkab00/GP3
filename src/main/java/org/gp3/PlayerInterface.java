@@ -12,4 +12,5 @@ public interface PlayerInterface {
     void setVolume(double volume);
 
     double getVolume();
+    Playable getPlaying();
 }
