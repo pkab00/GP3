@@ -13,25 +13,8 @@ public class AudioPlayer implements PlayerInterface{
     private PlayQueue playQueue;
     private MediaPlayer mediaPlayer;
     private Playable current;
-
-    private final Runnable defaultNextSongBehaviour = () -> {
-        if(playQueue.hasNext()){
-            System.out.println("AudioPlayer: Moving to next song...");
-            toNext();
-            play();
-        } else {
-            System.out.println("AudioPlayer: No more songs!");
-        }
-    };
-    private final Runnable repeatPlaylistBehaviour = () -> {
-        System.out.println("AudioPlayer: Repeating playlist...");
-        while(playQueue.hasPrevious()){
-            toPrevious();
-        }
-        play();
-    };
-    private final Runnable repeatSongBehaviour = this::play;
-    private Runnable nextSongBehaviour = repeatPlaylistBehaviour;
+    // STRATEGY pattern in action
+    private NextSongBehaviour nextSongBehaviour = new PlayUntillTheEndBehaviour(this);
 
     public AudioPlayer(ArrayList<Playable> songs){
         if(!jfxInitialized){
@@ -42,8 +25,6 @@ public class AudioPlayer implements PlayerInterface{
         }
         this.playQueue = new PlayQueue(songs);
         this.current = playQueue.next();
-        current = playQueue.next();
-        current = playQueue.next();
         System.out.println("AudioPlayer: Current song: " + current.getFilePath());
     }
 
@@ -122,6 +103,11 @@ public class AudioPlayer implements PlayerInterface{
     @Override
     public double getVolume() {
         return mediaPlayer.getVolume();
+    }
+
+    @Override
+    public TwoWayIterator<?> getQueue() {
+        return playQueue;
     }
 
     @Override

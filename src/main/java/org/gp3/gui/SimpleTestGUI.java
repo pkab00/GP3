@@ -45,9 +45,11 @@ public class SimpleTestGUI extends JFrame {
         JButton stop = new JButton("Stop");
         JButton pause = new JButton("Pause");
         JButton resume = new JButton("Resume");
+        JButton rewind = new JButton("Rewind");
         stop.setEnabled(false);
         pause.setEnabled(false);
         resume.setEnabled(false);
+        rewind.setEnabled(false);
 
         play.addActionListener(e -> {
             player.play();
@@ -55,6 +57,7 @@ public class SimpleTestGUI extends JFrame {
             stop.setEnabled(true);
             pause.setEnabled(true);
             resume.setEnabled(false);
+            rewind.setEnabled(true);
             updateCurrentPlaying();
         });
         stop.addActionListener(e -> {
@@ -63,17 +66,23 @@ public class SimpleTestGUI extends JFrame {
             stop.setEnabled(false);
             pause.setEnabled(false);
             resume.setEnabled(false);
+            rewind.setEnabled(false);
             updateCurrentPlaying();
         });
         pause.addActionListener(e -> {
             player.pause();
             pause.setEnabled(false);
             resume.setEnabled(true);
+            rewind.setEnabled(false);
         });
         resume.addActionListener(e -> {
             player.resume();
             pause.setEnabled(true);
             resume.setEnabled(false);
+            rewind.setEnabled(true);
+        });
+        rewind.addActionListener(e -> {
+            player.rewind();
         });
 
         updateCurrentPlaying();
@@ -82,6 +91,7 @@ public class SimpleTestGUI extends JFrame {
         panel.add(stop);
         panel.add(pause);
         panel.add(resume);
+        panel.add(rewind);
 
         add(panel, BorderLayout.CENTER);
         pack();

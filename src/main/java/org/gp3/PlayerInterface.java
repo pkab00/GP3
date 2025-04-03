@@ -12,5 +12,6 @@ public interface PlayerInterface {
     void setVolume(double volume);
 
     double getVolume();
+    TwoWayIterator<?> getQueue();
     Playable getPlaying();
 }
