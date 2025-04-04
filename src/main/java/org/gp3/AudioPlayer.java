@@ -5,6 +5,8 @@ import javafx.scene.media.*;
 import javafx.embed.swing.*;
 import javafx.util.Duration;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -13,6 +15,9 @@ public class AudioPlayer implements PlayerInterface{
     private PlayQueue playQueue;
     private MediaPlayer mediaPlayer;
     private Playable current;
+
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
+
     // STRATEGY pattern in action
     private NextSongBehaviour nextSongBehaviour = new PlayUntillTheEndBehaviour(this);
 
@@ -52,17 +57,20 @@ public class AudioPlayer implements PlayerInterface{
         this.mediaPlayer.setOnReady(() -> {
             this.mediaPlayer.play();
             System.out.println("AudioPlayer: Playing: " + current.getFilePath());
+            support.firePropertyChange("playing", false, true);
         });});
     }
 
     @Override
     public void pause() {
         Platform.runLater(mediaPlayer::pause);
+        support.firePropertyChange("playing", isPlaying(), false);
     }
 
     @Override
     public void resume() {
         Platform.runLater(mediaPlayer::play);
+        support.firePropertyChange("playing", isPlaying(), true);
     }
 
     @Override
@@ -77,6 +85,7 @@ public class AudioPlayer implements PlayerInterface{
                 mediaPlayer.stop();
                 mediaPlayer.dispose();
                 mediaPlayer = null;
+                support.firePropertyChange("playing", isPlaying(), false);
             });
         }
     }
@@ -113,5 +122,20 @@ public class AudioPlayer implements PlayerInterface{
     @Override
     public Playable getPlaying() {
         return current;
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;
+    }
+
+    @Override
+    public void addPCL(PropertyChangeListener pcl) {
+        support.addPropertyChangeListener(pcl);
+    }
+
+    @Override
+    public void removePCL(PropertyChangeListener pcl) {
+        support.removePropertyChangeListener(pcl);
     }
 }

@@ -1,5 +1,7 @@
 package org.gp3;
 
+import java.beans.PropertyChangeListener;
+
 public interface PlayerInterface {
     void play();
     void pause();
@@ -14,4 +16,8 @@ public interface PlayerInterface {
     double getVolume();
     TwoWayIterator<?> getQueue();
     Playable getPlaying();
+    boolean isPlaying();
+
+    void addPCL(PropertyChangeListener pcl);
+    void removePCL(PropertyChangeListener pcl);
 }
