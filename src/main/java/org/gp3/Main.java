@@ -1,11 +1,18 @@
 package org.gp3;
 
-import org.gp3.gui.SimpleTestGUI;
-
+import org.gp3.gui.PlayerGUI;
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    private static void setupPlayer(ArrayList<Playable> songs){
+        PlayerGUI gui = new PlayerGUI();
+        AudioPlayer player = new AudioPlayer(gui);
+        player.setPlaylist(songs);
+        Controller controller = new Controller(player);
+        gui.setController(controller);
+    }
+
+    public static void main(String[] args) {
         Song fate = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - Fate.mp3");
         Song klaxon = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - Klaxon.mp3");
         Song hann = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - HANN (Alone).mp3");
@@ -14,7 +21,6 @@ public class Main {
         songs.add(fate);
         songs.add(klaxon);
         songs.add(hann);
-
-        SimpleTestGUI gui = new SimpleTestGUI(songs);
+        setupPlayer(songs);
     }
 }

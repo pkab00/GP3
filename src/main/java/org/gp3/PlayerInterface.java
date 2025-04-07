@@ -1,6 +1,7 @@
 package org.gp3;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 public interface PlayerInterface {
     void play();
@@ -11,10 +12,13 @@ public interface PlayerInterface {
     void toNext();
     void toPrevious();
 
+    void setPlaylist(ArrayList<Playable> playlist);
     void setVolume(double volume);
+    void setPosition(double position);
 
     double getVolume();
-    TwoWayIterator<?> getQueue();
+    PlayQueue getQueue();
+    double getPosition();
     Playable getPlaying();
     boolean isPlaying();
 

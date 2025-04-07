@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.media.*;
 import javafx.embed.swing.*;
 import javafx.util.Duration;
+import org.gp3.gui.PlayerGUI;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -21,16 +22,12 @@ public class AudioPlayer implements PlayerInterface{
     // STRATEGY pattern in action
     private NextSongBehaviour nextSongBehaviour = new PlayUntillTheEndBehaviour(this);
 
-    public AudioPlayer(ArrayList<Playable> songs){
+    public AudioPlayer(PlayerGUI gui){
         if(!jfxInitialized){
             initializeJFX();
         }
-        if(songs.isEmpty()){
-            return;
-        }
-        this.playQueue = new PlayQueue(songs);
-        this.current = playQueue.next();
-        System.out.println("AudioPlayer: Current song: " + current.getFilePath());
+        addPCL(gui);
+        System.out.println("AudioPlayer: Setup finished!");
     }
 
     private static void initializeJFX(){
@@ -38,6 +35,17 @@ public class AudioPlayer implements PlayerInterface{
         Platform.setImplicitExit(false);
         jfxInitialized = true;
         System.out.println("AudioPlayer: JFX initialized!");
+    }
+
+    @Override
+    public void setPlaylist(ArrayList<Playable> playlist){
+        if(playlist.isEmpty()){
+            return;
+        }
+        this.playQueue = new PlayQueue(playlist);
+        this.current = playQueue.next();
+        System.out.println("AudioPlayer: Playlist set!");
+        System.out.println("Current song: " + current.getFilePath());
     }
 
     private String getCorrectURI(){
@@ -49,6 +57,9 @@ public class AudioPlayer implements PlayerInterface{
 
     @Override
     public void play() {
+        if(current == null){
+            return;
+        }
         if(mediaPlayer != null){
             stop();
         }
@@ -110,13 +121,31 @@ public class AudioPlayer implements PlayerInterface{
     }
 
     @Override
+    public void setPosition(double secDelta) {
+        Platform.runLater(() -> {
+            Duration duration = mediaPlayer.getMedia().getDuration(); // получаем длину
+            Duration currentTime = mediaPlayer.getCurrentTime(); // получаем текущее время
+
+            double newTime = currentTime.toMillis() + (secDelta * 1000); // вычисляем новое (желаемое) время
+            newTime = Math.max(0, Math.min(newTime, duration.toMillis())); // устанавливаем допустимые границы
+
+            mediaPlayer.seek(new Duration(newTime)); // устанавливаем новое время
+        });
+    }
+
+    @Override
     public double getVolume() {
         return mediaPlayer.getVolume();
     }
 
     @Override
-    public TwoWayIterator<?> getQueue() {
+    public PlayQueue getQueue() {
         return playQueue;
+    }
+
+    @Override
+    public double getPosition() {
+        return mediaPlayer.getCurrentTime().toSeconds();
     }
 
     @Override

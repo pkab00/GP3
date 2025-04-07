@@ -1,8 +1,11 @@
 package org.gp3.gui;
 
+import org.gp3.*;
+
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JPanel rootPanel;
@@ -17,6 +20,8 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JLabel nowPlayingLabel;
     private JButton selectButton;
 
+    private ControllerInterface controller;
+
     public PlayerGUI() {
         super("GP3 Player GUI");
         setSize(750, 200);
@@ -26,8 +31,20 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         setVisible(true);
     }
 
+    public void setController(ControllerInterface controller) {
+        this.controller = controller;
+        previousButton.addActionListener(e -> controller.handlePrevious());
+        nextButton.addActionListener(e -> controller.handleNext());
+        jumpBackButton.addActionListener(e -> controller.handleJumpBackward());
+        jumpForwardButton.addActionListener(e -> controller.handleJumpForward());
+        playPauseButton.addActionListener(e -> controller.handlePlay());
+    }
+
     public void updatePlayback(boolean isPlaying) {
-        playPauseButton.setText(isPlaying ? "./icons/pause.png" : "./icons/play.png");
+        Arrays.stream(playPauseButton.getActionListeners()).forEach(playPauseButton::removeActionListener);
+
+        playPauseButton.setIcon(new ImageIcon(isPlaying ? "src/main/resources/icons/pause.png" : "src/main/resources/icons/play.png"));
+        playPauseButton.addActionListener(isPlaying ? (e -> controller.handlePause()) : (e -> controller.handleResume()));
     }
 
     @Override
@@ -37,9 +54,5 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         if(propertyName.equals("playing")){
             updatePlayback((boolean) evt.getNewValue());
         }
-    }
-
-    public static void main(String[] args) {
-        PlayerGUI gui = new PlayerGUI();
     }
 }

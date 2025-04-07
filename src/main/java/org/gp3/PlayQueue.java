@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PlayQueue implements TwoWayIterator<Playable>{
     private final ArrayList<Playable> lst;
-    private int position = 0;
+    private int position = -1;
 
     public PlayQueue(ArrayList<Playable> lst) {
         this.lst = lst;
@@ -12,7 +12,7 @@ public class PlayQueue implements TwoWayIterator<Playable>{
 
     @Override
     public boolean hasNext() {
-        return position < lst.size();
+        return position < lst.size() - 1;
     }
 
     @Override
@@ -22,17 +22,13 @@ public class PlayQueue implements TwoWayIterator<Playable>{
 
     @Override
     public Playable next() {
-        if(hasNext()){
-            return lst.get(position++);
-        }
-        return null;
+        if(!hasNext()) return null;
+        return lst.get(++position);
     }
 
     @Override
     public Playable previous() {
-        if(hasPrevious()){
-            return lst.get(--position);
-        }
-        return null;
+        if(!hasPrevious()) return null;
+        return lst.get(--position);
     }
 }
