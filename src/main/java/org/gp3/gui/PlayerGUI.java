@@ -1,12 +1,17 @@
 package org.gp3.gui;
 
 import org.gp3.*;
-
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
+/**
+ * Графический интерфейс приложения, созданный с помощью GUI-формы.
+ * <p>
+ * <b>Перед использованием требует подключения контроллера, реализующего интерфейс {@link IController}.</b>
+ */
 public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JPanel rootPanel;
     private JButton aboutButton;
@@ -20,8 +25,11 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JLabel nowPlayingLabel;
     private JButton selectButton;
 
-    private ControllerInterface controller;
+    private IController controller;
 
+    /**
+     * Создаёт новый экземпляр PlayerGUI.
+     */
     public PlayerGUI() {
         super("GP3 Player GUI");
         setSize(750, 200);
@@ -31,7 +39,11 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         setVisible(true);
     }
 
-    public void setController(ControllerInterface controller) {
+    /**
+     * Метод для установки контроллера.
+     * @param controller объект {@link IController}
+     */
+    public void setController(IController controller) {
         this.controller = controller;
         previousButton.addActionListener(e -> controller.handlePrevious());
         nextButton.addActionListener(e -> controller.handleNext());
@@ -40,13 +52,29 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         playPauseButton.addActionListener(e -> controller.handlePlay());
     }
 
+    /**
+     * Метод, обновляющий кнопку паузы при изменении состояния воспроизведения.
+     * @param isPlaying текущее состояние воспроизведения.
+     * {@code true} - если трек играет, {@code false} - в противном случае
+     * @see #playPauseButton
+     */
     public void updatePlayback(boolean isPlaying) {
+        // удаляем все слушатели кнопки
         Arrays.stream(playPauseButton.getActionListeners()).forEach(playPauseButton::removeActionListener);
 
-        playPauseButton.setIcon(new ImageIcon(isPlaying ? "src/main/resources/icons/pause.png" : "src/main/resources/icons/play.png"));
-        playPauseButton.addActionListener(isPlaying ? (e -> controller.handlePause()) : (e -> controller.handleResume()));
+        // обновляем изображение и слушатель в соответствии с новым состоянием
+        String icon = isPlaying ? "pause.png" : "play.png";
+        ActionListener listener = isPlaying ? (e -> controller.handlePause()) : (e -> controller.handlePlay());
+        playPauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/"+icon)));
+        playPauseButton.addActionListener(listener);
     }
 
+    /**
+     * Метод, ответственный за реакцию на изменение отслеживаемых параметров плсеера.
+     * @param evt A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     * @see IPlayer источник уведомлений об изменении
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();

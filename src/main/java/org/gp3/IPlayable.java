@@ -1,6 +1,6 @@
 package org.gp3;
 
-public interface Playable {
+public interface IPlayable {
     String getFilePath();
     String getTitle();
     String getArtist();

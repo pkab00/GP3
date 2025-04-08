@@ -2,11 +2,11 @@ package org.gp3;
 
 import java.util.ArrayList;
 
-public class PlayQueue implements TwoWayIterator<Playable>{
-    private final ArrayList<Playable> lst;
+public class PlayQueue implements TwoWayIterator<IPlayable>{
+    private final ArrayList<IPlayable> lst;
     private int position = -1;
 
-    public PlayQueue(ArrayList<Playable> lst) {
+    public PlayQueue(ArrayList<IPlayable> lst) {
         this.lst = lst;
     }
 
@@ -21,13 +21,13 @@ public class PlayQueue implements TwoWayIterator<Playable>{
     }
 
     @Override
-    public Playable next() {
+    public IPlayable next() {
         if(!hasNext()) return null;
         return lst.get(++position);
     }
 
     @Override
-    public Playable previous() {
+    public IPlayable previous() {
         if(!hasPrevious()) return null;
         return lst.get(--position);
     }

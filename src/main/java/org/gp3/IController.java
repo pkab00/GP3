@@ -1,6 +1,6 @@
 package org.gp3;
 
-public interface ControllerInterface {
+public interface IController {
     void handlePlay();
     void handlePause();
     void handleResume();

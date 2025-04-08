@@ -7,7 +7,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.*;
 import java.nio.file.*;
 
-public class Song implements Playable {
+public class Song implements IPlayable {
     private String filePath;
     private String title;
     private String artist;
