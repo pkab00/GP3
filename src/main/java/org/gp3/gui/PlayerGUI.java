@@ -2,6 +2,7 @@ package org.gp3.gui;
 
 import org.gp3.*;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -17,7 +18,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JButton aboutButton;
     private JButton previousButton;
     private JButton nextButton;
-    private JButton jumpBackButton;
+    private JButton fastBackwardButton;
     private JButton jumpForwardButton;
     private JButton playPauseButton;
     private JPanel playPanel;
@@ -47,7 +48,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         this.controller = controller;
         previousButton.addActionListener(e -> controller.handlePrevious());
         nextButton.addActionListener(e -> controller.handleNext());
-        jumpBackButton.addActionListener(e -> controller.handleJumpBackward());
+        fastBackwardButton.addActionListener(e -> controller.handleJumpBackward());
         jumpForwardButton.addActionListener(e -> controller.handleJumpForward());
         playPauseButton.addActionListener(e -> controller.handlePlay());
     }
