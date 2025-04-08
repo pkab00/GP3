@@ -2,7 +2,6 @@ package org.gp3.gui;
 
 import org.gp3.*;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,7 +32,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
      */
     public PlayerGUI() {
         super("GP3 Player GUI");
-        setSize(750, 200);
+        setSize(750, 250);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(rootPanel);
@@ -59,7 +58,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
      * {@code true} - если трек играет, {@code false} - в противном случае
      * @see #playPauseButton
      */
-    public void updatePlayback(boolean isPlaying) {
+    private void updatePlayback(boolean isPlaying) {
         // удаляем все слушатели кнопки
         Arrays.stream(playPauseButton.getActionListeners()).forEach(playPauseButton::removeActionListener);
 
@@ -68,6 +67,11 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         ActionListener listener = isPlaying ? (e -> controller.handlePause()) : (e -> controller.handlePlay());
         playPauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/"+icon)));
         playPauseButton.addActionListener(listener);
+    }
+
+    private void updateSongLabel(IPlayable song) {
+        nowPlayingLabel.setText("<html><div style=\"text-align: center;\"><b>"
+                +song.getTitle()+"</b><br>"+song.getArtist()+"</div></html>");
     }
 
     /**
@@ -80,8 +84,12 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
 
-        if(propertyName.equals("playing")){
-            updatePlayback((boolean) evt.getNewValue());
+        switch (propertyName) {
+            case "playing":
+                updatePlayback((boolean) evt.getNewValue());
+                break;
+            case "newSong":
+                updateSongLabel((IPlayable) evt.getNewValue());
         }
     }
 }

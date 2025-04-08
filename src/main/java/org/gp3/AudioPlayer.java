@@ -128,6 +128,7 @@ public class AudioPlayer implements IPlayer {
             this.mediaPlayer.play();
             System.out.println("AudioPlayer: Playing: " + current.getFilePath());
             support.firePropertyChange("playing", false, true);
+            support.firePropertyChange("newSong", null, current);
         });});
     }
 
@@ -178,7 +179,9 @@ public class AudioPlayer implements IPlayer {
     @Override
     public void toNext() {
         if(playQueue.hasNext()){
+            IPlayable oldCurrent = current;
             current = playQueue.next();
+            support.firePropertyChange("newSong", oldCurrent, current);
         }
     }
 
@@ -188,7 +191,9 @@ public class AudioPlayer implements IPlayer {
     @Override
     public void toPrevious() {
         if(playQueue.hasPrevious()){
+            IPlayable oldCurrent = current;
             current = playQueue.previous();
+            support.firePropertyChange("newSong", oldCurrent, current);
         }
     }
 
