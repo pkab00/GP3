@@ -1,10 +1,23 @@
 package org.gp3;
 
 import org.gp3.gui.PlayerGUI;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class Main {
-    private static void setupPlayer(ArrayList<IPlayable> songs){
+    private static ArrayList<IPlayable> setUpPlaylist(){
+        ArrayList<IPlayable> playlist = new ArrayList<>();
+        File playlistFolder = new File("src/test/test_audio");
+        File[] files = playlistFolder.listFiles();
+        for (File file : files) {
+            IPlayable song = new Song(file.getPath());
+            playlist.add(song);
+        }
+        return playlist;
+    }
+
+    private static void setUpPlayer(ArrayList<IPlayable> songs){
         PlayerGUI gui = new PlayerGUI();
         AudioPlayer player = new AudioPlayer(gui);
         player.setPlaylist(songs);
@@ -13,14 +26,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Song fate = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - Fate.mp3");
-        Song klaxon = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - Klaxon.mp3");
-        Song hann = new Song("D:\\GP3\\src\\test\\test_audio\\(G)I-DLE - HANN (Alone).mp3");
-
-        ArrayList<IPlayable> songs = new ArrayList<>();
-        songs.add(fate);
-        songs.add(klaxon);
-        songs.add(hann);
-        setupPlayer(songs);
+        setUpPlayer(setUpPlaylist());
     }
 }

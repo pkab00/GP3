@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 /**
@@ -24,7 +25,11 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JToolBar menuBar;
     private JLabel nowPlayingLabel;
     private JButton selectButton;
+    private JSlider songSlider;
+    private JLabel leftTimeLabel;
+    private JLabel rightTimeLabel;
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
     private IController controller;
 
     /**
@@ -37,6 +42,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(rootPanel);
         setVisible(true);
+        songSlider.setValue(0);
     }
 
     /**
@@ -69,9 +75,17 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         playPauseButton.addActionListener(listener);
     }
 
+    /**
+     * Обновление метки с названием песни.
+     * В случае, если данные не указаны, {@code title = "NO TITLE"} и {@code artist = "UNKNOWN"}
+     * @param song текущая воспроизводимая песня
+     */
     private void updateSongLabel(IPlayable song) {
-        nowPlayingLabel.setText("<html><div style=\"text-align: center;\"><b>"
-                +song.getTitle()+"</b><br>"+song.getArtist()+"</div></html>");
+        String title = song.getTitle().isBlank() ? "NO TITLE" : song.getTitle();
+        String artist = song.getArtist().isBlank() ? "UNKNOWN" : song.getArtist();
+
+        nowPlayingLabel.setText(String.format("<html><div style=\"text-align: center;\">" +
+                "<b>%s</b><br>%s</div></html>", title, artist));
     }
 
     /**
