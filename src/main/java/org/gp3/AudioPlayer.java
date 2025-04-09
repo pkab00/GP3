@@ -10,6 +10,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Логическое "ядро" приложения. Реализует интерфейс {@link IPlayer}.
@@ -47,6 +49,7 @@ public class AudioPlayer implements IPlayer {
     private PlayQueue playQueue;
     private MediaPlayer mediaPlayer;
     private IPlayable current;
+    private Timer timer;
 
     // OBSERVER pattern in action
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
@@ -109,6 +112,22 @@ public class AudioPlayer implements IPlayer {
                 .replace("%29", ")");
     }
 
+    public void startTimer(){
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                    notifyProgressChange();
+            }
+        };
+        timer.schedule(task, 0, 500);
+    }
+
+    public void stopTimer(){
+        timer.cancel();
+        timer = null;
+    }
+
     /**
      * Запуск проигрывания новой песни.
      * <ol>
@@ -121,15 +140,18 @@ public class AudioPlayer implements IPlayer {
     public void play() {
         if(current == null) return;
         if(mediaPlayer != null) stop();
+        if(timer != null) stopTimer();
 
         Platform.runLater(() -> {this.mediaPlayer = new MediaPlayer(new Media(getCorrectURI()));
         this.mediaPlayer.setOnEndOfMedia(nextSongBehaviour);
         this.mediaPlayer.setOnReady(() -> {
             this.mediaPlayer.play();
             System.out.println("AudioPlayer: Playing: " + current.getFilePath());
-            support.firePropertyChange("playing", false, true);
-            support.firePropertyChange("newSong", null, current);
-        });});
+            notifySongChange(null);
+            startTimer();
+        });
+            this.mediaPlayer.setOnPlaying(this::notifyPlayChange);
+        });
     }
 
     /**
@@ -137,8 +159,10 @@ public class AudioPlayer implements IPlayer {
      */
     @Override
     public void pause() {
-        Platform.runLater(mediaPlayer::pause);
-        support.firePropertyChange("playing", isPlaying(), false);
+        Platform.runLater(() -> {
+            mediaPlayer.pause();
+            mediaPlayer.setOnPaused(this::notifyPlayChange);
+        });
     }
 
     /**
@@ -146,8 +170,10 @@ public class AudioPlayer implements IPlayer {
      */
     @Override
     public void resume() {
-        Platform.runLater(mediaPlayer::play);
-        support.firePropertyChange("playing", isPlaying(), true);
+        Platform.runLater(() -> {
+            mediaPlayer.play();
+            mediaPlayer.setOnPlaying(this::notifyPlayChange);
+        });
     }
 
     /**
@@ -156,6 +182,7 @@ public class AudioPlayer implements IPlayer {
     @Override
     public void rewind() {
         Platform.runLater(() -> mediaPlayer.seek(new Duration(0)));
+        notifyProgressChange();
     }
 
     /**
@@ -168,7 +195,7 @@ public class AudioPlayer implements IPlayer {
                 mediaPlayer.stop();
                 mediaPlayer.dispose();
                 mediaPlayer = null;
-                support.firePropertyChange("playing", isPlaying(), false);
+                notifyPlayChange();
             });
         }
     }
@@ -181,7 +208,7 @@ public class AudioPlayer implements IPlayer {
         if(playQueue.hasNext()){
             IPlayable oldCurrent = current;
             current = playQueue.next();
-            support.firePropertyChange("newSong", oldCurrent, current);
+            notifySongChange(oldCurrent);
         }
     }
 
@@ -193,7 +220,7 @@ public class AudioPlayer implements IPlayer {
         if(playQueue.hasPrevious()){
             IPlayable oldCurrent = current;
             current = playQueue.previous();
-            support.firePropertyChange("newSong", oldCurrent, current);
+            notifySongChange(oldCurrent);
         }
     }
 
@@ -221,6 +248,7 @@ public class AudioPlayer implements IPlayer {
             newTime = Math.max(0, Math.min(newTime, duration.toMillis())); // устанавливаем допустимые границы
 
             mediaPlayer.seek(new Duration(newTime)); // устанавливаем новое время
+            notifyProgressChange();
         });
     }
 
@@ -263,6 +291,22 @@ public class AudioPlayer implements IPlayer {
     @Override
     public boolean isPlaying() {
         return mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;
+    }
+
+    public void notifyPlayChange(){
+        support.firePropertyChange("playing", !isPlaying(), isPlaying());
+    }
+
+    public void notifySongChange(IPlayable oldCurrent){
+        support.firePropertyChange("newSong", oldCurrent, current);
+    }
+
+    public void notifyProgressChange(){
+        if (mediaPlayer == null || mediaPlayer.getMedia() == null) return;
+
+        int duration = (int)mediaPlayer.getMedia().getDuration().toSeconds();
+        int current = (int)mediaPlayer.getCurrentTime().toSeconds();
+        support.firePropertyChange("progress", current, duration - current);
     }
 
     /**

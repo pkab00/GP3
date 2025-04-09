@@ -29,7 +29,6 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JLabel leftTimeLabel;
     private JLabel rightTimeLabel;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
     private IController controller;
 
     /**
@@ -70,7 +69,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
 
         // обновляем изображение и слушатель в соответствии с новым состоянием
         String icon = isPlaying ? "pause.png" : "play.png";
-        ActionListener listener = isPlaying ? (e -> controller.handlePause()) : (e -> controller.handlePlay());
+        ActionListener listener = isPlaying ? (e -> controller.handlePause()) : (e -> controller.handleResume());
         playPauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/"+icon)));
         playPauseButton.addActionListener(listener);
     }
@@ -86,6 +85,19 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
 
         nowPlayingLabel.setText(String.format("<html><div style=\"text-align: center;\">" +
                 "<b>%s</b><br>%s</div></html>", title, artist));
+    }
+
+    private void updateTimeLabels(int leftValue, int rightValue) {
+        String leftTime = String.format("%02d:%02d", leftValue/60, leftValue%60);
+        String rightTime = String.format("-%02d:%02d", rightValue/60, rightValue%60);
+
+        leftTimeLabel.setText(leftTime);
+        rightTimeLabel.setText(rightTime);
+    }
+
+    private void updateSongSlider(int position, int duration) {
+        if(position == 0) songSlider.setMaximum(duration);
+        songSlider.setValue(position);
     }
 
     /**
@@ -104,6 +116,15 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
                 break;
             case "newSong":
                 updateSongLabel((IPlayable) evt.getNewValue());
+                break;
+            case "progress":
+                Object position = evt.getOldValue();
+                Object duration = evt.getNewValue();
+                if (duration != null && position != null){
+                    updateTimeLabels((int) position, (int) duration);
+                    updateSongSlider((int) position, (int) duration);
+                }
+                break;
         }
     }
 }
