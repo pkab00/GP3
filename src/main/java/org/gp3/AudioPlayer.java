@@ -10,6 +10,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,7 +41,7 @@ import java.util.TimerTask;
  * }</pre>
  * @see #mediaPlayer
  * @see PlayQueue
- * @see NextSongBehaviour
+ * @see PlayMode
  * @see #addPCL(PropertyChangeListener)
  * @see #removePCL(PropertyChangeListener)
  */
@@ -52,15 +53,17 @@ public class AudioPlayer implements IPlayer {
     private Timer timer;
 
     // OBSERVER pattern in action
-    private PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     // STRATEGY pattern in action
-    private NextSongBehaviour nextSongBehaviour = new PlayUntillTheEndBehaviour(this);
+    private final PlayModeIterator playModeIterator;
+    private PlayMode playMode;
 
     /**
      * Базовая настройка плеера перед стартом:
      * <ol>
      *     <li>Инициализация окружения JavaFX</li>
      *     <li>Подключение GUI в качестве слушателя</li>
+     *     <li>Создание очереди режимов воспроизведения</li>
      * </ol>
      * @param gui графический интерфейс
      * @see #initializeJFX()
@@ -71,6 +74,11 @@ public class AudioPlayer implements IPlayer {
             initializeJFX();
         }
         addPCL(gui);
+        playModeIterator = new PlayModeIterator(
+                List.of(new DefaultMode(this),
+                        new RepeatAllMode(this),
+                        new RepeatOneMode(this)));
+        playMode = playModeIterator.next();
         System.out.println("AudioPlayer: Setup finished!");
     }
 
@@ -150,7 +158,7 @@ public class AudioPlayer implements IPlayer {
         if(timer != null) stopTimer();
 
         Platform.runLater(() -> {this.mediaPlayer = new MediaPlayer(new Media(getCorrectURI()));
-        this.mediaPlayer.setOnEndOfMedia(nextSongBehaviour);
+        this.mediaPlayer.setOnEndOfMedia(playMode);
         this.mediaPlayer.setOnReady(() -> {
             this.mediaPlayer.play();
             System.out.println("AudioPlayer: Playing: " + current.getFilePath());
@@ -260,6 +268,19 @@ public class AudioPlayer implements IPlayer {
     }
 
     /**
+     * Устанавливает новый режим воспроизведения.
+     * Если в качестве параметра передано {@code null}, устанавливается следующий режим в очереди.
+     * @param playMode новый режим воспроизведения
+     */
+    @Override
+    public void setPlayMode(PlayMode playMode) {
+        if(playMode != null) this.playMode = playMode;
+        else this.playMode = playModeIterator.next();
+        mediaPlayer.setOnEndOfMedia(this.playMode);
+        notifyPlayModeChange(this.playMode);
+    }
+
+    /**
      * @return текущая громкость
      */
     @Override
@@ -289,6 +310,14 @@ public class AudioPlayer implements IPlayer {
     @Override
     public IPlayable getPlaying() {
         return current;
+    }
+
+    /**
+     * @return текущий режим воспроизведения
+     */
+    @Override
+    public PlayMode getPlayMode() {
+        return playMode;
     }
 
     /**
@@ -333,6 +362,14 @@ public class AudioPlayer implements IPlayer {
         int duration = (int)mediaPlayer.getMedia().getDuration().toSeconds();
         int current = (int)mediaPlayer.getCurrentTime().toSeconds();
         support.firePropertyChange("progress", current, duration - current);
+    }
+
+    /**
+     * Уведомляет слушателей о смене режима воспроизведения.
+     * @param playMode новый режим воспроизведения
+     */
+    public void notifyPlayModeChange(PlayMode playMode){
+        support.firePropertyChange("playMode", null, playMode);
     }
 
     /**

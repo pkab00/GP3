@@ -1,9 +1,9 @@
 package org.gp3;
 
-public class PlayUntillTheEndBehaviour implements NextSongBehaviour {
+public class DefaultMode implements PlayMode {
     private final AudioPlayer audioPlayer;
 
-    public PlayUntillTheEndBehaviour(AudioPlayer audioPlayer) {
+    public DefaultMode(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
     }
 

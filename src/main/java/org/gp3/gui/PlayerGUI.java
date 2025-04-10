@@ -7,8 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Графический интерфейс приложения, созданный с помощью GUI-формы.
@@ -30,6 +30,8 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JSlider songSlider;
     private JLabel leftTimeLabel;
     private JLabel rightTimeLabel;
+    private JButton playModeButton;
+    private JButton playlistButton;
 
     private IController controller;
 
@@ -59,15 +61,10 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         playPauseButton.addActionListener(e -> controller.handlePlay());
         songSlider.addMouseListener(new MouseAdapter() {
             private int lastPosition = 0;
-            @Override
-            public void mousePressed(MouseEvent e) {
-                lastPosition = songSlider.getValue();
-            }
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                controller.handleSongSlider(songSlider.getValue(), lastPosition);
-            }
+            @Override public void mousePressed(MouseEvent e) {lastPosition = songSlider.getValue();}
+            @Override public void mouseReleased(MouseEvent e) {controller.handleSongSlider(songSlider.getValue(), lastPosition);}
         });
+        playModeButton.addActionListener(e -> controller.handlePlayMode());
     }
 
     /**
@@ -124,6 +121,22 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     }
 
     /**
+     * Обновление кнопки режима воспроизведения.
+     * @param playMode новый режим воспроизведения
+     */
+    private void updatePlayModeButton(PlayMode playMode){
+        final Map<Class<? extends PlayMode>, String> modeMap = Map.of(
+                DefaultMode.class, "repeat_off",
+                RepeatAllMode.class, "repeat_all",
+                RepeatOneMode.class, "repeat_one"
+        );
+
+        String desiredFileName = modeMap.get(playMode.getClass());
+        playModeButton.setIcon(new ImageIcon(getClass().getResource("/icons/"+desiredFileName+".png")));
+        playModeButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/"+desiredFileName+"_prs.png")));
+    }
+
+    /**
      * Метод, ответственный за реакцию на изменение отслеживаемых параметров плеера.
      * @param evt A PropertyChangeEvent object describing the event source
      *          and the property that has changed.
@@ -148,6 +161,9 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
                     updateSongSlider((int) position, (int) duration);
                 }
                 break;
+            case "playMode":
+                PlayMode playMode = (PlayMode) evt.getNewValue();
+                updatePlayModeButton(playMode);
         }
     }
 }

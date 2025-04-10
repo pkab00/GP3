@@ -15,11 +15,13 @@ public interface IPlayer {
     void setPlaylist(ArrayList<IPlayable> playlist);
     void setVolume(double volume);
     void setPosition(double position);
+    void setPlayMode(PlayMode playMode);
 
     double getVolume();
     PlayQueue getQueue();
     double getPosition();
     IPlayable getPlaying();
+    PlayMode getPlayMode();
     boolean isPlaying();
 
     void addPCL(PropertyChangeListener pcl);

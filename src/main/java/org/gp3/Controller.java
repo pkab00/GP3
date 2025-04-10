@@ -63,8 +63,7 @@ public class Controller implements IController {
      */
     @Override
     public void handleNext() {
-        audioPlayer.toNext();
-        audioPlayer.play();
+        audioPlayer.getPlayMode().nextSong();
     }
 
     /**
@@ -84,5 +83,14 @@ public class Controller implements IController {
     @Override
     public void handleSongSlider(int newPosition, int oldPosition) {
         audioPlayer.setPosition(newPosition - oldPosition);
+    }
+
+    /**
+     * Обработка смены режима воспроизведения.
+     * Меняет текущий {@code PlayMode} на следующий в списке.
+     */
+    @Override
+    public void handlePlayMode() {
+        audioPlayer.setPlayMode(null);
     }
 }

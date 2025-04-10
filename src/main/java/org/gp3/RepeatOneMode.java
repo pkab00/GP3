@@ -1,9 +1,9 @@
 package org.gp3;
 
-public class RepeatBehaviour implements NextSongBehaviour{
+public class RepeatOneMode implements PlayMode {
     private final AudioPlayer audioPlayer;
 
-    public RepeatBehaviour(AudioPlayer audioPlayer) {
+    public RepeatOneMode(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
     }
 
