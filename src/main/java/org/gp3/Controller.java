@@ -1,5 +1,9 @@
 package org.gp3;
 
+import org.gp3.gui.MusicFileChooser;
+
+import java.util.ArrayList;
+
 /**
  * Промежуточное звено между плеером и его интерфейсом.
  * Содержит объект {@link IPlayer}, с его помощью обрабатывает поведение при нажатии кнопок.
@@ -92,5 +96,17 @@ public class Controller implements IController {
     @Override
     public void handlePlayMode() {
         audioPlayer.setPlayMode(null);
+    }
+
+    /**
+     * Обработка выбора плейлиста с помощью кастомного класса.
+     * @see MusicFileChooser
+     */
+    @Override
+    public void handleFilesSelection() {
+        MusicFileChooser chooser = new MusicFileChooser();
+        chooser.showDialog(null);
+        ArrayList<IPlayable> songs = chooser.getOutputSongs();
+        audioPlayer.setPlaylist(songs);
     }
 }

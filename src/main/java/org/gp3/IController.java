@@ -11,4 +11,5 @@ public interface IController {
     void handlePrevious();
     void handleSongSlider(int newPosition, int oldPosition);
     void handlePlayMode();
+    void handleFilesSelection();
 }

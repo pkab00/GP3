@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JPanel rootPanel;
-    private JButton aboutButton;
+    private JButton infoButton;
     private JButton previousButton;
     private JButton nextButton;
     private JButton fastBackwardButton;
@@ -26,7 +26,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JPanel playPanel;
     private JToolBar menuBar;
     private JLabel nowPlayingLabel;
-    private JButton selectButton;
+    private JButton selectFilesButton;
     private JSlider songSlider;
     private JLabel leftTimeLabel;
     private JLabel rightTimeLabel;
@@ -65,6 +65,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
             @Override public void mouseReleased(MouseEvent e) {controller.handleSongSlider(songSlider.getValue(), lastPosition);}
         });
         playModeButton.addActionListener(e -> controller.handlePlayMode());
+        selectFilesButton.addActionListener(e -> controller.handleFilesSelection());
     }
 
     /**

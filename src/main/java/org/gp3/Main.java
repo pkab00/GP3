@@ -17,15 +17,14 @@ public class Main {
         return playlist;
     }
 
-    private static void setUpPlayer(ArrayList<IPlayable> songs){
+    private static void setUpPlayer(){
         PlayerGUI gui = new PlayerGUI();
         AudioPlayer player = new AudioPlayer(gui);
-        player.setPlaylist(songs);
         Controller controller = new Controller(player);
         gui.setController(controller);
     }
 
     public static void main(String[] args) {
-        setUpPlayer(setUpPlaylist());
+        setUpPlayer();
     }
 }

@@ -23,20 +23,33 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="7be6c" class="javax.swing.JButton" binding="aboutButton" default-binding="true">
+          <component id="7be6c" class="javax.swing.JButton" binding="infoButton">
             <constraints/>
             <properties>
               <borderPainted value="false"/>
+              <contentAreaFilled value="false"/>
               <focusPainted value="false"/>
-              <text value="About"/>
+              <icon value="icons/info.png"/>
+              <opaque value="false"/>
+              <pressedIcon value="icons/info_prs.png"/>
+              <text value=""/>
+              <toolTipText value="About"/>
             </properties>
           </component>
-          <component id="35edb" class="javax.swing.JButton" binding="selectButton" default-binding="true">
+          <component id="35edb" class="javax.swing.JButton" binding="selectFilesButton">
             <constraints/>
             <properties>
               <borderPainted value="false"/>
+              <contentAreaFilled value="false"/>
+              <enabled value="true"/>
               <focusPainted value="false"/>
-              <text value="Select"/>
+              <icon value="icons/select.png"/>
+              <opaque value="false"/>
+              <pressedIcon value="icons/select_prs.png"/>
+              <requestFocusEnabled value="true"/>
+              <rolloverEnabled value="true"/>
+              <text value=""/>
+              <toolTipText value="Select files"/>
             </properties>
           </component>
         </children>
@@ -135,7 +148,7 @@
               <pressedIcon value="icons/play_prs.png"/>
               <selected value="false"/>
               <text value=""/>
-              <toolTipText value="Play"/>
+              <toolTipText value="Play/Pause"/>
             </properties>
           </component>
           <component id="8e20d" class="javax.swing.JSlider" binding="songSlider">
@@ -176,7 +189,7 @@
               <pressedIcon value="icons/repeat_off_prs.png"/>
               <selected value="false"/>
               <text value=""/>
-              <toolTipText value="To next song"/>
+              <toolTipText value="Change play mode"/>
             </properties>
           </component>
           <component id="1becf" class="javax.swing.JLabel" binding="rightTimeLabel">
@@ -220,7 +233,7 @@
               <pressedIcon value="icons/playlist_prs.png"/>
               <selected value="false"/>
               <text value=""/>
-              <toolTipText value="To next song"/>
+              <toolTipText value="Playlist"/>
             </properties>
           </component>
           <vspacer id="88ad3">
