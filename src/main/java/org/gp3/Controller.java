@@ -75,4 +75,14 @@ public class Controller implements IController {
         audioPlayer.toPrevious();
         audioPlayer.play();
     }
+
+    /**
+     * Обработка взаимодействия со слайдером.
+     * @param newPosition позиция после отпускания слайдера
+     * @param oldPosition позиция до отпускания слайдера
+     */
+    @Override
+    public void handleSongSlider(int newPosition, int oldPosition) {
+        audioPlayer.setPosition(newPosition - oldPosition);
+    }
 }

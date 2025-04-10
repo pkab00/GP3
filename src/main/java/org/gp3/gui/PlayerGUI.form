@@ -165,7 +165,7 @@
             </constraints>
             <properties>
               <paintLabels value="false"/>
-              <paintTicks value="false"/>
+              <paintTicks value="true"/>
               <paintTrack value="true"/>
               <snapToTicks value="false"/>
               <valueIsAdjusting value="false"/>

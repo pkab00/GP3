@@ -3,6 +3,8 @@ package org.gp3.gui;
 import org.gp3.*;
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.format.DateTimeFormatter;
@@ -55,6 +57,17 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         fastBackwardButton.addActionListener(e -> controller.handleJumpBackward());
         jumpForwardButton.addActionListener(e -> controller.handleJumpForward());
         playPauseButton.addActionListener(e -> controller.handlePlay());
+        songSlider.addMouseListener(new MouseAdapter() {
+            private int lastPosition = 0;
+            @Override
+            public void mousePressed(MouseEvent e) {
+                lastPosition = songSlider.getValue();
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                controller.handleSongSlider(songSlider.getValue(), lastPosition);
+            }
+        });
     }
 
     /**
@@ -87,6 +100,11 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
                 "<b>%s</b><br>%s</div></html>", title, artist));
     }
 
+    /**
+     * Обновление временных меток.
+     * @param leftValue текущая позиция воспроизведения
+     * @param rightValue оставшееся время
+     */
     private void updateTimeLabels(int leftValue, int rightValue) {
         String leftTime = String.format("%02d:%02d", leftValue/60, leftValue%60);
         String rightTime = String.format("-%02d:%02d", rightValue/60, rightValue%60);
@@ -95,13 +113,18 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         rightTimeLabel.setText(rightTime);
     }
 
+    /**
+     * Обновление слайдера с позицией воспроизведения.
+     * @param position позиция воспроизведения
+     * @param duration длительность текущего трека
+     */
     private void updateSongSlider(int position, int duration) {
         if(position == 0) songSlider.setMaximum(duration);
         songSlider.setValue(position);
     }
 
     /**
-     * Метод, ответственный за реакцию на изменение отслеживаемых параметров плсеера.
+     * Метод, ответственный за реакцию на изменение отслеживаемых параметров плеера.
      * @param evt A PropertyChangeEvent object describing the event source
      *          and the property that has changed.
      * @see IPlayer источник уведомлений об изменении

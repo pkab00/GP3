@@ -9,4 +9,5 @@ public interface IController {
     void handleJumpBackward();
     void handleNext();
     void handlePrevious();
+    void handleSongSlider(int newPosition, int oldPosition);
 }

@@ -112,6 +112,10 @@ public class AudioPlayer implements IPlayer {
                 .replace("%29", ")");
     }
 
+    /**
+     * Инициализирует и создаёт таймер, раз в 0.5 секунды,
+     * сообщающий о необходимости, обновить компоненты UI.
+     */
     public void startTimer(){
         timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -123,6 +127,9 @@ public class AudioPlayer implements IPlayer {
         timer.schedule(task, 0, 500);
     }
 
+    /**
+     * Останавливает и обнуляет таймер.
+     */
     public void stopTimer(){
         timer.cancel();
         timer = null;
@@ -293,14 +300,33 @@ public class AudioPlayer implements IPlayer {
         return mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;
     }
 
+    /**
+     * Уведомляет слушателей об окончании/остановке/возобновлении воспроизведения трека.
+     * <p>
+     * {@code oldValue} - старое значение isPlaying
+     * {@code newValue} - новое значение isPlaying
+     */
     public void notifyPlayChange(){
         support.firePropertyChange("playing", !isPlaying(), isPlaying());
     }
 
+    /**
+     * Уведомляет слушателей о смене текущего воспроизводимого трека.
+     * <p>
+     * {@code oldValue} - старый трек
+     * {@code newValue} - новый трек
+     */
     public void notifySongChange(IPlayable oldCurrent){
         support.firePropertyChange("newSong", oldCurrent, current);
     }
 
+    /**
+     * Ежесекундно уведомляет слушателей о текущем времени воспроизведения.
+     * Если аудио ещё загружается - вызов сбрасывается.
+     * <p>
+     * {@code oldValue} - текущая позиция
+     * {@code newValue} - оставшееся время (длительность - позиция)
+     */
     public void notifyProgressChange(){
         if (mediaPlayer == null || mediaPlayer.getMedia() == null) return;
 
