@@ -41,7 +41,7 @@ public class MusicFileChooser extends JFileChooser {
      * Вывод на экран диалогового окна и последующая обработка выбранных файлов.
      * @param parent родительский компонент
      */
-    public void showDialog(JComponent parent) {
+    public void showDialog(JFrame parent) {
         output.clear();
         int returnVal = showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {

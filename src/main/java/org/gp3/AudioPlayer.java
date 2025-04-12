@@ -71,14 +71,15 @@ public class AudioPlayer implements IPlayer {
      */
     public AudioPlayer(PlayerGUI gui){
         if(!jfxInitialized){
-            initializeJFX();
+            initializeJFX(); // Инициализируем окружение JavaFX при первом вызове
         }
-        addPCL(gui);
+        addPCL(gui); // Подключаем GUI в качестве слушателя
         playModeIterator = new PlayModeIterator(
                 List.of(new DefaultMode(this),
                         new RepeatAllMode(this),
                         new RepeatOneMode(this)));
-        playMode = playModeIterator.next();
+        playMode = playModeIterator.next(); // Начинаем с режима по умолчанию
+        setPlaylist(new ArrayList<>()); // По умолчанию - пустой плейлист
         System.out.println("AudioPlayer: Setup finished!");
     }
 
@@ -100,13 +101,9 @@ public class AudioPlayer implements IPlayer {
      */
     @Override
     public void setPlaylist(ArrayList<IPlayable> playlist){
-        if(playlist.isEmpty()){
-            return;
-        }
         this.playQueue = new PlayQueue(playlist);
-        this.current = playQueue.next();
+        this.current = playQueue.next(); // Устанавливаем первый трек в качестве текущего
         System.out.println("AudioPlayer: Playlist set!");
-        System.out.println("Current song: " + current.getFilePath());
     }
 
     /**
@@ -132,7 +129,7 @@ public class AudioPlayer implements IPlayer {
                     notifyProgressChange();
             }
         };
-        timer.schedule(task, 0, 500);
+        timer.schedule(task, 0, 500); // Раз в 0.5 секунды
     }
 
     /**

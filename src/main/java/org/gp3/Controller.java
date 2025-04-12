@@ -103,10 +103,7 @@ public class Controller implements IController {
      * @see MusicFileChooser
      */
     @Override
-    public void handleFilesSelection() {
-        MusicFileChooser chooser = new MusicFileChooser();
-        chooser.showDialog(null);
-        ArrayList<IPlayable> songs = chooser.getOutputSongs();
-        audioPlayer.setPlaylist(songs);
+    public void handleFilesSelection(ArrayList<IPlayable> selectedSongs) {
+        audioPlayer.setPlaylist(selectedSongs);
     }
 }

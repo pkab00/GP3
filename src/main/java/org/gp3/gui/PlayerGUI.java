@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -44,8 +45,13 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(rootPanel);
+        setIconImage((new ImageIcon(getClass().getResource("/icons/icon.png")).getImage()));
         setVisible(true);
         songSlider.setValue(0);
+        lockInterface(true);
+
+        // TODO: УДАЛИ ЭТУ СТРОКУ, КОГДА ФИЧА БУДЕТ ГОТОВА
+        playlistButton.setVisible(false);
     }
 
     /**
@@ -65,7 +71,35 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
             @Override public void mouseReleased(MouseEvent e) {controller.handleSongSlider(songSlider.getValue(), lastPosition);}
         });
         playModeButton.addActionListener(e -> controller.handlePlayMode());
-        selectFilesButton.addActionListener(e -> controller.handleFilesSelection());
+        selectFilesButton.addActionListener(e -> {
+            MusicFileChooser chooser = new MusicFileChooser(); // выводим диалог выбора файлов
+            chooser.showDialog(this);
+            ArrayList<IPlayable> songs = chooser.getOutputSongs(); // получаем выбранные файлы
+            if(!songs.isEmpty()) { // если песни выбраны
+                controller.handleFilesSelection(songs); // передаем их контроллеру
+                lockInterface(false); // разблокируем интерфейс
+            }});
+        infoButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this,
+                    "GP3 Player\nVersion: 1.0.0\nDeveloped by vbshkn\n2025",
+                    "GP3 Player", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+
+    /**
+     * Устанавливает/снимает блокировку с кнопок управления воспроизведением.
+     * @param lock логическое значение блокировки
+     *             {@code true} - если нужно заблокировать,
+     *             {@code false} - если нужно разблокировать
+     */
+    private void lockInterface(boolean lock) {
+        playPauseButton.setEnabled(!lock);
+        previousButton.setEnabled(!lock);
+        nextButton.setEnabled(!lock);
+        fastBackwardButton.setEnabled(!lock);
+        jumpForwardButton.setEnabled(!lock);
+        playModeButton.setEnabled(!lock);
+        playlistButton.setEnabled(!lock);
     }
 
     /**
