@@ -12,13 +12,12 @@ import java.util.ArrayList;
 /**
  * Кастомный класс, основанный на {@link JFileChooser}. <p>
  * Поддерживает только аудио-форматы, а собранные файлы конвертирует в {@link IPlayable}. <p>
- * Используйте {@link #showDialog(JComponent)} для отображения диалогового окна
+ * Используйте {@link #showDialog(JFrame)} для отображения диалогового окна
  * и {@link #getOutputSongs()} для получения вывода.
  */
 public class MusicFileChooser extends JFileChooser {
     private final String[][] FILTERS = {
             {"mp3", "MP3 files (*.mp3)"},
-            {"wav", "WAV files (*.wav)"}
     };
     private ArrayList<IPlayable> output = new ArrayList<>();
 
