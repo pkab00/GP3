@@ -12,6 +12,7 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
     private JList<IPlayable> songsList;
     private JTextArea songDataTextArea;
     private JPanel rootPanel;
+    private JButton itemsButton;
 
     private IPlaylistController controller;
 
@@ -42,6 +43,10 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
 
     public void setSongDataText(String infoText) {
         songDataTextArea.setText(infoText);
+    }
+
+    public void setItemsButtonText(String text) {
+        itemsButton.setText(text);
     }
 
     @Override
