@@ -5,4 +5,5 @@ public interface TwoWayIterator<T> {
     boolean hasPrevious();
     T next();
     T previous();
+    TwoWayIterator<T> copy();
 }

@@ -20,7 +20,7 @@ public class Main {
     private static void setUpPlayer(){
         PlayerGUI gui = new PlayerGUI();
         AudioPlayer player = new AudioPlayer(gui);
-        Controller controller = new Controller(player);
+        PlayerController controller = new PlayerController(player);
         gui.setController(controller);
     }
 

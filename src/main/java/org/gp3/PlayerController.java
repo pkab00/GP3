@@ -1,6 +1,7 @@
 package org.gp3;
 
 import org.gp3.gui.MusicFileChooser;
+import org.gp3.gui.PlaylistGUI;
 
 import java.util.ArrayList;
 
@@ -8,10 +9,10 @@ import java.util.ArrayList;
  * Промежуточное звено между плеером и его интерфейсом.
  * Содержит объект {@link IPlayer}, с его помощью обрабатывает поведение при нажатии кнопок.
  */
-public class Controller implements IController {
+public class PlayerController implements IPlayerController {
     private final IPlayer audioPlayer;
 
-    public Controller(AudioPlayer audioPlayer) {
+    public PlayerController(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
     }
 
@@ -105,5 +106,18 @@ public class Controller implements IController {
     @Override
     public void handleFilesSelection(ArrayList<IPlayable> selectedSongs) {
         audioPlayer.setPlaylist(selectedSongs);
+    }
+
+    /**
+     * Обработка открытия окна просмотра плейлиста.
+     * @see org.gp3.gui.PlaylistGUI PlaylistGUI
+     */
+    @Override
+    public void handlePlaylistView() {
+        PlaylistGUI gui = new PlaylistGUI();
+        PlaylistController controller = new PlaylistController(audioPlayer, gui);
+        controller.handlePlaylistChange();
+        gui.setController(controller);
+        gui.showScreen();
     }
 }

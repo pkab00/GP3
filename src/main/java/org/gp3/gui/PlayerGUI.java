@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Графический интерфейс приложения, созданный с помощью GUI-формы.
  * <p>
- * <b>Перед использованием требует подключения контроллера, реализующего интерфейс {@link IController}.</b>
+ * <b>Перед использованием требует подключения контроллера, реализующего интерфейс {@link IPlayerController}.</b>
  */
 public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JPanel rootPanel;
@@ -34,13 +34,13 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     private JButton playModeButton;
     private JButton playlistButton;
 
-    private IController controller;
+    private IPlayerController controller;
 
     /**
      * Создаёт новый экземпляр PlayerGUI.
      */
     public PlayerGUI() {
-        super("GP3 Player GUI");
+        super("GP3 Player");
         setSize(750, 250);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,16 +49,13 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         setVisible(true);
         songSlider.setValue(0);
         lockInterface(true);
-
-        // TODO: УДАЛИ ЭТУ СТРОКУ, КОГДА ФИЧА БУДЕТ ГОТОВА
-        playlistButton.setVisible(false);
     }
 
     /**
      * Метод для установки контроллера.
-     * @param controller объект {@link IController}
+     * @param controller объект {@link IPlayerController}
      */
-    public void setController(IController controller) {
+    public void setController(IPlayerController controller) {
         this.controller = controller;
         previousButton.addActionListener(e -> controller.handlePrevious());
         nextButton.addActionListener(e -> controller.handleNext());
@@ -84,6 +81,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
                     "GP3 Player\nVersion: 1.0.0\nDeveloped by vbshkn\n2025",
                     "GP3 Player", JOptionPane.INFORMATION_MESSAGE);
         });
+        playlistButton.addActionListener(e -> controller.handlePlaylistView()); // выводим окно просмотра плейлиста
     }
 
     /**

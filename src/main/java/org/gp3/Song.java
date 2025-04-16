@@ -28,14 +28,7 @@ public class Song implements IPlayable {
 
     @Override
     public String toString() {
-        String output = "";
-        output += "Title: " + title + "\n";
-        output += "Artist: " + artist + "\n";
-        output += "Album: " + album + "\n";
-        output += "Genre: " + genre + "\n";
-        output += "Year: " + year + "\n";
-        output += String.format("Duration: %.2f\n", durationMillis);
-        return output;
+        return artist + " - " + title;
     }
 
     private void extractMetadata(){

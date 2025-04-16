@@ -10,6 +10,11 @@ public class PlayQueue implements TwoWayIterator<IPlayable>{
         this.lst = lst;
     }
 
+    private PlayQueue(ArrayList<IPlayable> lst, int position) {
+        this.lst = lst;
+        this.position = position;
+    }
+
     @Override
     public boolean hasNext() {
         return position < lst.size() - 1;
@@ -30,5 +35,10 @@ public class PlayQueue implements TwoWayIterator<IPlayable>{
     public IPlayable previous() {
         if(!hasPrevious()) return null;
         return lst.get(--position);
+    }
+
+    @Override
+    public TwoWayIterator<IPlayable> copy() {
+        return new PlayQueue(lst, position);
     }
 }

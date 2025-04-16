@@ -2,7 +2,7 @@ package org.gp3;
 
 import java.util.ArrayList;
 
-public interface IController {
+public interface IPlayerController {
     void handlePlay();
     void handlePause();
     void handleResume();
@@ -14,4 +14,5 @@ public interface IController {
     void handleSongSlider(int newPosition, int oldPosition);
     void handlePlayMode();
     void handleFilesSelection(ArrayList<IPlayable> selectedSongs);
+    void handlePlaylistView();
 }
