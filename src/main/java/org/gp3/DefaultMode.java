@@ -1,9 +1,9 @@
 package org.gp3;
 
 public class DefaultMode implements PlayMode {
-    private final AudioPlayer audioPlayer;
+    private final IPlayer audioPlayer;
 
-    public DefaultMode(AudioPlayer audioPlayer) {
+    public DefaultMode(IPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
     }
 

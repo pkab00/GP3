@@ -1,9 +1,9 @@
 package org.gp3;
 
 public class RepeatOneMode implements PlayMode {
-    private final AudioPlayer audioPlayer;
+    private final IPlayer audioPlayer;
 
-    public RepeatOneMode(AudioPlayer audioPlayer) {
+    public RepeatOneMode(IPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
     }
 
