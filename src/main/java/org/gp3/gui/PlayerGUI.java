@@ -1,6 +1,8 @@
 package org.gp3.gui;
 
 import org.gp3.*;
+import org.gp3.parse.SongMetadata;
+
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -123,8 +125,9 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
      * @param song текущая воспроизводимая песня
      */
     private void updateSongLabel(IPlayable song) {
-        String title = song.getTitle().isBlank() ? "NO TITLE" : song.getTitle();
-        String artist = song.getArtist().isBlank() ? "UNKNOWN" : song.getArtist();
+        SongMetadata metadata = song.getMetadata();
+        String title = metadata.title().isBlank() ? "NO TITLE" : metadata.title();
+        String artist = metadata.artist().isBlank() ? "UNKNOWN" : metadata.artist();
 
         nowPlayingLabel.setText(String.format("<html><div style=\"text-align: center;\">" +
                 "<b>%s</b><br>%s</div></html>", title, artist));

@@ -1,4 +1,4 @@
-package org.gp3;
+package org.gp3.parse;
 
 public record SongMetadata(String title,
                            String artist,
