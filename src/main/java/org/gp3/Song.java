@@ -1,6 +1,7 @@
 package org.gp3;
 
 import org.gp3.parse.SongMetadata;
+import org.gp3.parse.TikaMp3Parser;
 
 import java.nio.file.*;
 
@@ -24,7 +25,7 @@ public class Song implements IPlayable {
             return;
         }
         this.filePath = filePath;
-       // TODO this.metadata = new MetadataParser(filePath).getMetadata();
+        this.metadata = new TikaMp3Parser().parse(filePath);
     }
 
     /**
