@@ -5,5 +5,5 @@ module org.gp3 {
     requires javafx.swing;
     requires javafx.media;
     requires javafx.graphics;
-    requires org.apache.tika.core;
+    requires groupdocs.metadata;
 }
