@@ -6,4 +6,6 @@ module org.gp3 {
     requires javafx.media;
     requires javafx.graphics;
     requires org.apache.tika.core;
+    requires metadata.extractor;
+    requires org.apache.tika.parser.audiovideo;
 }

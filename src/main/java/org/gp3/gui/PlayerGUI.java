@@ -126,8 +126,8 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
      */
     private void updateSongLabel(IPlayable song) {
         SongMetadata metadata = song.getMetadata();
-        String title = metadata.title().isBlank() ? "NO TITLE" : metadata.title();
-        String artist = metadata.artist().isBlank() ? "UNKNOWN" : metadata.artist();
+        String title = metadata.title();
+        String artist = metadata.artist();
 
         nowPlayingLabel.setText(String.format("<html><div style=\"text-align: center;\">" +
                 "<b>%s</b><br>%s</div></html>", title, artist));

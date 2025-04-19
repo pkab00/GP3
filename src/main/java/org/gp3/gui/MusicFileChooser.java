@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class MusicFileChooser extends JFileChooser {
     private final String[][] FILTERS = {
             {"mp3", "MP3 files (*.mp3)"},
+            {"wav", "WAV files (*.wav)"}
     };
     private ArrayList<IPlayable> output = new ArrayList<>();
 
