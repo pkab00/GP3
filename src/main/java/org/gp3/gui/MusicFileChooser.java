@@ -47,11 +47,11 @@ public class MusicFileChooser extends JFileChooser {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File[] files = getSelectedFiles();
             for (File file : files) {
-                if(file.isFile()) {
-                    handleFiles(file);
-                }
-                else if(file.isDirectory()) {
+                if(file.isDirectory()) {
                     handleDirectories(file);
+                }
+                else if(file.isFile() && file.canRead()) {
+                    handleFiles(file);
                 }
             }
         }
@@ -64,6 +64,7 @@ public class MusicFileChooser extends JFileChooser {
      */
     private void handleFiles(File file){
         IPlayable song = new Song(file.getPath());
+        System.out.println(file.getPath());
         output.add(song);
     }
 
@@ -75,9 +76,11 @@ public class MusicFileChooser extends JFileChooser {
     private void handleDirectories(File dir){
         if(dir.listFiles() == null) {return;}
         for(File file : dir.listFiles()){
-            for (String[] filter : FILTERS) {
-                if (file.getName().endsWith(filter[0])) {
-                    handleFiles(file);
+            if (file.isFile() && file.canRead()) {
+                for (String[] filter : FILTERS) {
+                    if (file.getName().endsWith(filter[0])) {
+                        handleFiles(file);
+                    }
                 }
             }
         }

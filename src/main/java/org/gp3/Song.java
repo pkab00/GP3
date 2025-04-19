@@ -1,5 +1,6 @@
 package org.gp3;
 
+import org.gp3.parse.SmartParser;
 import org.gp3.parse.SongMetadata;
 import org.gp3.parse.Mp3Parser;
 import org.gp3.parse.WavParser;
@@ -26,7 +27,7 @@ public class Song implements IPlayable {
             return;
         }
         this.filePath = filePath;
-        this.metadata = (filePath.endsWith("mp3") ? new Mp3Parser() : new WavParser()).parse(filePath);
+        this.metadata = new SmartParser().parse(filePath);
     }
 
     /**

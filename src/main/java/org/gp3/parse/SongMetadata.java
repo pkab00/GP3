@@ -87,11 +87,11 @@ public class SongMetadata {
     public static SongMetadata getInstance(String title, String artist,
                                            String album, String genre,
                                            String year, double duration) {
-        title = (title != null) ? title : "UNTITLED";
-        artist = (artist != null) ? artist : "UNKNOWN";
-        album = (album != null) ? album : "UNKNOWN";
-        genre = (genre != null) ? genre : "UNKNOWN";
-        year = (year != null) ? year : "UNKNOWN";
+        title = (title != null) ? (!title.isEmpty() ? title : "UNTITLED") : "UNTITLED";
+        artist = (artist != null) ? (!artist.isEmpty() ? artist : "UNKNOWN") : "UNKNOWN";
+        album = (album != null) ? (!album.isEmpty() ? album : "UNKNOWN") : "UNKNOWN";
+        genre = (genre != null) ? (!genre.isEmpty() ? genre : "UNKNOWN") : "UNKNOWN";
+        year = (year != null) ? (!year.isEmpty() ? year : "UNKNOWN") : "UNKNOWN";
         duration = (duration > 0) ? duration : 0;
         return new SongMetadata(title, artist, album, genre, year, duration);
     }
