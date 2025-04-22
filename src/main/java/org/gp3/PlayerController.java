@@ -2,7 +2,9 @@ package org.gp3;
 
 import org.gp3.gui.MusicFileChooser;
 import org.gp3.gui.PlaylistGUI;
+import org.gp3.gui.ProgressGUI;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -104,8 +106,25 @@ public class PlayerController implements IPlayerController {
      * @see MusicFileChooser
      */
     @Override
-    public void handleFilesSelection(ArrayList<IPlayable> selectedSongs) {
-        audioPlayer.setPlaylist(selectedSongs);
+    public void handleFilesSelection(File[] selectedFiles) {
+        ProgressGUI progressGUI = new ProgressGUI(); // окно с прогрессом загрузки
+        // используем callback для обработки стадий загрузки
+        SongLoader loader = new SongLoader(selectedFiles, new Callback<>() {
+            @Override
+            public void onStarted() {
+                progressGUI.setMaximum(selectedFiles.length); // на старте устанавливаем максимальное значение
+            }
+            @Override
+            public void onProgress(Integer progress) {
+                progressGUI.updateProgress(progress); // обновляем прогресс
+            }
+            @Override
+            public void onFinished(ArrayList<IPlayable> parameter) {
+                audioPlayer.setPlaylist(parameter); // установка плейлиста
+                progressGUI.done(); // закрываем окно
+            }
+        });
+        loader.execute(); // запуск процесса загрузки
     }
 
     /**

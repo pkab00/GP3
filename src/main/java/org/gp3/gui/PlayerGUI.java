@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -73,9 +74,9 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         selectFilesButton.addActionListener(e -> {
             MusicFileChooser chooser = new MusicFileChooser(); // выводим диалог выбора файлов
             chooser.showDialog(this);
-            ArrayList<IPlayable> songs = chooser.getOutputSongs(); // получаем выбранные файлы
-            if(!songs.isEmpty()) { // если песни выбраны
-                controller.handleFilesSelection(songs); // передаем их контроллеру
+            File[] files = chooser.getSelectedFiles(); // получаем выбранные файлы
+            if(files.length != 0) { // если файлы выбраны) { // если песни выбраны
+                controller.handleFilesSelection(files); // передаем их контроллеру
                 lockInterface(false); // разблокируем интерфейс
             }});
         infoButton.addActionListener(e -> {
