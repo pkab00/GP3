@@ -51,14 +51,6 @@ public class PlaylistController implements IPlaylistController {
     @Override
     public void handleSelectedItem(IPlayable playable) {
         SongMetadata metadata = playable.getMetadata();
-        String songData = "";
-        songData += "Title: " + (metadata.title() == null ? "Unknown" : metadata.title()) + "\n";
-        songData += "Artist: " + (metadata.artist() == null? "Unknown" : metadata.artist()) + "\n";
-        songData += "Album: " + (metadata.album() == null ? "Unknown" : metadata.album()) + "\n";
-        songData += "Year: " + (metadata.year() == null ? "Unknown" : metadata.year()) + "\n";
-        songData += "Genre: " + (metadata.genre() == null ? "Unknown" : metadata.genre()) + "\n";
-        songData += "Duration: " + String.format("%02d:%02d",
-                (int)metadata.durationMillis()/60, (int)metadata.durationMillis()%60);
-        playlistGUI.setSongDataText(songData);
+        playlistGUI.setSongDataText(metadata.toString());
     }
 }

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * Парсер аудиофайлов в формате WAV.
+ */
 public class WavParser implements IParser {
     private double calculateDuration(String filePath) throws IOException {
         try(FileInputStream fis = new FileInputStream(new File(filePath))){
@@ -16,7 +19,7 @@ public class WavParser implements IParser {
             int bitsPerSample = bytesToInt(header, 34, 2);
             int dataSize = bytesToInt(header, 40, 4); // Размер данных в байтах
 
-            return (double) dataSize / (sampleRate * channels * (bitsPerSample / 8));
+            return (double) dataSize / (sampleRate * channels * ((double) bitsPerSample / 8));
         }
     }
 

@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+/**
+ * Парсер аудиофайлов в формате mp3.
+ */
 public class Mp3Parser implements IParser{
     @Override
     public SongMetadata parse(String filePath) {

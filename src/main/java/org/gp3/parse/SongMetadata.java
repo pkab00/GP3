@@ -95,4 +95,19 @@ public class SongMetadata {
         duration = (duration > 0) ? duration : 0;
         return new SongMetadata(title, artist, album, genre, year, duration);
     }
+
+    /**
+     * Переопределение метода toString.
+     * @return полное строковое представление объекта
+     */
+    @Override
+    public String toString(){
+        return "Title: " + title + "\n"
+                + "Artist: " + artist() + "\n"
+                + "Album: " + album() + "\n"
+                + "Year: " + year() + "\n"
+                + "Genre: " + genre() + "\n"
+                + "Duration: " + String.format("%02d:%02d",
+                (int)durationMillis()/60, (int)durationMillis()%60);
+    }
 }
