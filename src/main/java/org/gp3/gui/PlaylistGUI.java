@@ -2,9 +2,9 @@ package org.gp3.gui;
 
 import org.gp3.IPlayable;
 import org.gp3.IPlaylistController;
-import org.gp3.PlaylistController;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -17,7 +17,6 @@ import java.beans.PropertyChangeListener;
 public class PlaylistGUI extends JFrame implements PropertyChangeListener {
     private JList<IPlayable> songsList;
     private JTextArea songDataTextArea;
-    private JPanel rootPanel;
     private JButton itemsButton;
 
     private IPlaylistController controller;
@@ -30,8 +29,52 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
         super("Playlist");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
-        setContentPane(rootPanel);
         setLocationRelativeTo(null);
+
+        // Создание и настройка компонентов
+        initComponents();
+    }
+
+    /**
+     * Инициализация компонентов GUI.
+     */
+    private void initComponents() {
+        // Основная панель с GridLayout (2 строки, 2 столбца)
+        JPanel rootPanel = new JPanel(new GridLayout(2, 2, -1, -1));
+        rootPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+        // JTextArea для отображения данных о песне
+        songDataTextArea = new JTextArea("NO DATA");
+        songDataTextArea.setBackground(new Color(0xE1E1E1)); // Цвет фонa
+        songDataTextArea.setEditable(false);
+        songDataTextArea.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+        songDataTextArea.setForeground(Color.WHITE);
+        songDataTextArea.setLineWrap(true);
+        JPanel textAreaPanel = new JPanel(new BorderLayout());
+        textAreaPanel.add(new JScrollPane(songDataTextArea), BorderLayout.CENTER);
+        rootPanel.add(textAreaPanel);
+
+        // JList для отображения списка песен
+        songsList = new JList<>();
+        songsList.setBackground(new Color(0xFEEDED)); // Цвет фона
+        songsList.setForeground(Color.WHITE);
+        songsList.setSelectionBackground(new Color(0xE1E1E1));
+        songsList.setSelectionForeground(Color.WHITE);
+        JScrollPane scrollPane = new JScrollPane(songsList);
+        rootPanel.add(scrollPane);
+
+        // Кнопка для отображения количества элементов
+        itemsButton = new JButton("Items: N/A");
+        itemsButton.setEnabled(true);
+        itemsButton.setFocusPainted(false);
+        itemsButton.setFocusable(false);
+        itemsButton.setFont(new Font("Yu Gothic UI", Font.PLAIN, 18));
+        itemsButton.setHorizontalAlignment(SwingConstants.CENTER);
+        itemsButton.setRolloverEnabled(true);
+        rootPanel.add(itemsButton);
+
+        // Установка основной панели в окно
+        setContentPane(rootPanel);
     }
 
     /**
@@ -58,7 +101,7 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
     /**
      * Устанавливает модель списка. Метод используется контроллером для обновления содержимого списка.
      * @param listModel новая модель списка
-     * @see PlaylistController#handlePlaylistChange()
+     * @see org.gp3.PlaylistController#handlePlaylistChange()
      */
     public void setListModel(DefaultListModel<IPlayable> listModel) {
         songsList.setModel(listModel);
@@ -67,8 +110,8 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
     /**
      * Обновляет поле с информацией о текущем треке.
      * Используется контроллером при выборе нового трека.
-     * @param  infoText информация о текущем треке
-     * @see PlaylistController#handleSelectedItem(IPlayable)
+     * @param infoText информация о текущем треке
+     * @see org.gp3.PlaylistController#handleSelectedItem(IPlayable)
      */
     public void setSongDataText(String infoText) {
         songDataTextArea.setText(infoText);
@@ -90,10 +133,8 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
-        switch(propertyName) {
-            case "newSong": // обновить listModel
-                controller.handlePlaylistChange();
-                break;
+        if ("newSong".equals(propertyName)) {
+            controller.handlePlaylistChange();
         }
     }
 }

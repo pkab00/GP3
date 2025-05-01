@@ -4,31 +4,28 @@ import org.gp3.*;
 import org.gp3.parse.SongMetadata;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
 /**
- * Графический интерфейс приложения, созданный с помощью GUI-формы.
+ * Графический интерфейс приложения, созданный с помощью Swing API.
  * <p>
  * <b>Перед использованием требует подключения контроллера, реализующего интерфейс {@link IPlayerController}.</b>
  */
 public class PlayerGUI extends JFrame implements PropertyChangeListener {
-    private JPanel rootPanel;
     private JButton infoButton;
     private JButton previousButton;
     private JButton nextButton;
     private JButton fastBackwardButton;
     private JButton jumpForwardButton;
     private JButton playPauseButton;
-    private JPanel playPanel;
-    private JToolBar menuBar;
     private JLabel nowPlayingLabel;
     private JButton selectFilesButton;
     private JSlider songSlider;
@@ -47,11 +44,196 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         setSize(750, 250);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setContentPane(rootPanel);
-        setIconImage((new ImageIcon(getClass().getResource("/icons/icon.png")).getImage()));
+        setIconImage(new ImageIcon(getClass().getResource("/icons/icon.png")).getImage());
+
+        // Инициализация компонентов
+        initComponents();
         setVisible(true);
-        songSlider.setValue(0);
         lockInterface(true);
+    }
+
+    /**
+     * Инициализация компонентов GUI.
+     */
+    private void initComponents() {
+        // Основная панель с GridBagLayout
+        JPanel rootPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(5, 5, 5, 5); // Отступы
+
+        // Панель меню
+        JToolBar menuBar = new JToolBar();
+        menuBar.setFloatable(false); // Отключаем возможность перемещать меню
+        menuBar.setOpaque(true);
+        menuBar.setBorderPainted(true);
+
+        // Кнопка "О программе"
+        infoButton = new JButton(new ImageIcon(getClass().getResource("/icons/info.png")));
+        infoButton.setBorderPainted(false);
+        infoButton.setContentAreaFilled(false);
+        infoButton.setFocusPainted(false);
+        infoButton.setOpaque(false);
+        infoButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/info_prs.png")));
+        infoButton.setToolTipText("About");
+        menuBar.add(infoButton);
+
+        // Кнопка "Выбрать файлы"
+        selectFilesButton = new JButton(new ImageIcon(getClass().getResource("/icons/select.png")));
+        selectFilesButton.setBorderPainted(false);
+        selectFilesButton.setContentAreaFilled(false);
+        selectFilesButton.setFocusPainted(false);
+        selectFilesButton.setOpaque(false);
+        selectFilesButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/select_prs.png")));
+        selectFilesButton.setToolTipText("Select files");
+        menuBar.add(selectFilesButton);
+
+        // Гибкое пространство между левой и правой частями меню
+        menuBar.add(Box.createHorizontalGlue());
+
+        // Кнопка "Плейлист"
+        playlistButton = new JButton(new ImageIcon(getClass().getResource("/icons/playlist.png")));
+        playlistButton.setBorderPainted(false);
+        playlistButton.setContentAreaFilled(false);
+        playlistButton.setFocusPainted(false);
+        playlistButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/playlist_prs.png")));
+        playlistButton.setToolTipText("Playlist");
+        menuBar.add(playlistButton);
+
+        // Добавление меню в основную панель
+        gbc.gridx = 0; // Начинаем с первого столбца
+        gbc.gridy = 0; // Первая строка
+        gbc.gridwidth = 7; // Занимает 7 столбцов
+        gbc.weightx = 1.0; // Растягиваем по горизонтали
+        gbc.weighty = 0.0; // Не растягиваем по вертикали
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Растягиваем только по горизонтали
+        rootPanel.add(menuBar, gbc);
+
+
+        // Метка "Сейчас играет"
+        nowPlayingLabel = new JLabel("PRESS \"PLAY\" BUTTON", SwingConstants.CENTER);
+        nowPlayingLabel.setFont(new Font("Yu Gothic UI", Font.PLAIN, 24));
+        nowPlayingLabel.setBackground(new Color(0xFFA5A5A5));
+        nowPlayingLabel.setOpaque(true);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 4;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        rootPanel.add(nowPlayingLabel, gbc);
+
+        // Слайдер воспроизведения
+        songSlider = new JSlider();
+        songSlider.setPaintTicks(true);
+        songSlider.setPaintTrack(true);
+        songSlider.setValue(0);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 4;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        rootPanel.add(songSlider, gbc);
+
+        // Метка времени слева
+        leftTimeLabel = new JLabel("00:00", SwingConstants.LEFT);
+        leftTimeLabel.setFont(new Font("Yu Gothic UI", Font.PLAIN, 18));
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        rootPanel.add(leftTimeLabel, gbc);
+
+        // Метка времени справа
+        rightTimeLabel = new JLabel("-00:00", SwingConstants.RIGHT);
+        rightTimeLabel.setFont(new Font("Yu Gothic UI", Font.PLAIN, 18));
+        gbc.gridx = 4;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        rootPanel.add(rightTimeLabel, gbc);
+
+    // Панель для нижнего ряда кнопок
+    JPanel buttonPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbcButton = new GridBagConstraints();
+    gbcButton.fill = GridBagConstraints.NONE;
+    gbcButton.insets = new Insets(5, 5, 5, 5); // Отступы
+
+    // Кнопка "Предыдущий трек"
+    gbcButton.gridx = 0;
+    gbcButton.gridy = 0;
+    gbcButton.weightx = 0.0; // Не растягиваем по горизонтали
+    previousButton = new JButton(new ImageIcon(getClass().getResource("/icons/previous.png")));
+    previousButton.setBorderPainted(false);
+    previousButton.setContentAreaFilled(false);
+    previousButton.setFocusPainted(false);
+    previousButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/previous_prs.png")));
+    previousButton.setToolTipText("To previous song");
+    buttonPanel.add(previousButton, gbcButton);
+
+    // Кнопка "Перемотка назад"
+    gbcButton.gridx = 1;
+    fastBackwardButton = new JButton(new ImageIcon(getClass().getResource("/icons/backward.png")));
+    fastBackwardButton.setBorderPainted(false);
+    fastBackwardButton.setContentAreaFilled(false);
+    fastBackwardButton.setFocusPainted(false);
+    fastBackwardButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/backward_prs.png")));
+    fastBackwardButton.setToolTipText("Jump back (-10 seconds)");
+    buttonPanel.add(fastBackwardButton, gbcButton);
+
+    // Кнопка "Play/Pause"
+    gbcButton.gridx = 2;
+    playPauseButton = new JButton(new ImageIcon(getClass().getResource("/icons/play.png")));
+    playPauseButton.setBorderPainted(false);
+    playPauseButton.setContentAreaFilled(false);
+    playPauseButton.setFocusPainted(false);
+    playPauseButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/play_prs.png")));
+    playPauseButton.setToolTipText("Play/Pause");
+    buttonPanel.add(playPauseButton, gbcButton);
+
+    // Кнопка "Перемотка вперед"
+    gbcButton.gridx = 3;
+    jumpForwardButton = new JButton(new ImageIcon(getClass().getResource("/icons/forward.png")));
+    jumpForwardButton.setBorderPainted(false);
+    jumpForwardButton.setContentAreaFilled(false);
+    jumpForwardButton.setFocusPainted(false);
+    jumpForwardButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/forward_prs.png")));
+    jumpForwardButton.setToolTipText("Jump forward (+10 seconds)");
+    buttonPanel.add(jumpForwardButton, gbcButton);
+
+    // Кнопка "Следующий трек"
+    gbcButton.gridx = 4;
+    nextButton = new JButton(new ImageIcon(getClass().getResource("/icons/next.png")));
+    nextButton.setBorderPainted(false);
+    nextButton.setContentAreaFilled(false);
+    nextButton.setFocusPainted(false);
+    nextButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/next_prs.png")));
+    nextButton.setToolTipText("To next song");
+    buttonPanel.add(nextButton, gbcButton);
+
+    // Кнопка смены режима воспроизведения
+    gbcButton.gridx = 5;
+    playModeButton = new JButton(new ImageIcon(getClass().getResource("/icons/repeat_off.png")));
+    playModeButton.setBorderPainted(false);
+    playModeButton.setContentAreaFilled(false);
+    playModeButton.setFocusPainted(false);
+    playModeButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/repeat_off_prs.png")));
+    playModeButton.setToolTipText("Change play mode");
+    buttonPanel.add(playModeButton, gbcButton);
+
+    // Добавляем нижний ряд кнопок в основную панель
+    gbc.gridx = 1;
+    gbc.gridy = 4;
+    gbc.gridwidth = 3;
+    gbc.weightx = 1.0; // Растягиваем по горизонтали
+    gbc.weighty = 0.0; // Не растягиваем по вертикали
+    gbc.fill = GridBagConstraints.HORIZONTAL; // Растягиваем только по горизонтали
+    rootPanel.add(buttonPanel, gbc);
+
+
+        // Установка основной панели в окно
+        setContentPane(rootPanel);
     }
 
     /**
@@ -75,7 +257,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
             MusicFileChooser chooser = new MusicFileChooser(); // выводим диалог выбора файлов
             chooser.showDialog(this);
             File[] files = chooser.getSelectedFiles(); // получаем выбранные файлы
-            if(files.length != 0) { // если файлы выбраны) { // если песни выбраны
+            if(files.length != 0) { // если файлы выбраны
                 controller.handleFilesSelection(files); // передаем их контроллеру
                 lockInterface(false); // разблокируем интерфейс
             }});
@@ -101,6 +283,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         jumpForwardButton.setEnabled(!lock);
         playModeButton.setEnabled(!lock);
         playlistButton.setEnabled(!lock);
+        songSlider.setEnabled(!lock);
     }
 
     /**
@@ -135,7 +318,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
     }
 
     /**
-     * Обновление временных меток.
+     * Обновление временных метки.
      * @param leftValue текущая позиция воспроизведения
      * @param rightValue оставшееся время
      */
