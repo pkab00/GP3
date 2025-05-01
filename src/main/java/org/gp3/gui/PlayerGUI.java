@@ -41,7 +41,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
      */
     public PlayerGUI() {
         super("GP3 Player");
-        setSize(750, 250);
+        setSize(750, 300);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getResource("/icons/icon.png")).getImage());
@@ -113,7 +113,6 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         // Метка "Сейчас играет"
         nowPlayingLabel = new JLabel("PRESS \"PLAY\" BUTTON", SwingConstants.CENTER);
         nowPlayingLabel.setFont(new Font("Yu Gothic UI", Font.PLAIN, 24));
-        nowPlayingLabel.setBackground(new Color(0xFFA5A5A5));
         nowPlayingLabel.setOpaque(true);
         gbc.gridx = 1;
         gbc.gridy = 1;

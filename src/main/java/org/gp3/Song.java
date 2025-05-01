@@ -2,8 +2,6 @@ package org.gp3;
 
 import org.gp3.parse.SmartParser;
 import org.gp3.parse.SongMetadata;
-import org.gp3.parse.Mp3Parser;
-import org.gp3.parse.WavParser;
 
 import java.nio.file.*;
 

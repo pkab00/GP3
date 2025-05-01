@@ -44,8 +44,8 @@ public class SongLoader extends SwingWorker<ArrayList<IPlayable>, Integer> {
             File file = files[i];
             if(file.isFile() && file.canRead()) {
                 handleFiles(file);
+                publish(i);
             }
-            publish(i);
         }
         return output;
     }

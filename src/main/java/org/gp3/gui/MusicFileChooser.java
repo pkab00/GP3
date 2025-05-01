@@ -5,7 +5,6 @@ import org.gp3.SongLoader;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.File;
 
 /**
  * Кастомный класс, основанный на {@link JFileChooser}. <p>
@@ -16,7 +15,6 @@ public class MusicFileChooser extends JFileChooser {
             {"mp3", "MP3 files (*.mp3)"},
             {"wav", "WAV files (*.wav)"}
     };
-    private File[] files;
 
     /**
      * Инициализация и установка фильтров.
@@ -40,7 +38,7 @@ public class MusicFileChooser extends JFileChooser {
     public void showDialog(JFrame parent) {
         int returnVal = showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            files = getSelectedFiles();
+            getSelectedFiles();
         }
     }
 }

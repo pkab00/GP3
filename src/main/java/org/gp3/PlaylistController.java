@@ -40,7 +40,7 @@ public class PlaylistController implements IPlaylistController {
             itemsCounter++;
         }
         playlistGUI.setListModel(listModel);
-        playlistGUI.setItemsButtonText("Items : " + itemsCounter); // отображаем количество элементов очереди
+        playlistGUI.setItemButtonText("Items : " + itemsCounter); // отображаем количество элементов очереди
     }
 
     /**

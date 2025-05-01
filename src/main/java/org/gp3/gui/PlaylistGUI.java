@@ -2,22 +2,26 @@ package org.gp3.gui;
 
 import org.gp3.IPlayable;
 import org.gp3.IPlaylistController;
+import org.gp3.PlaylistController;
 
 import javax.swing.*;
-import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 
 /**
  * Класс GUI, отображающий очередь воспроизведения.
  * Не влияет на сам процесс воспроизведения, только визуально отображает очередь.
  * Взаимодействует с контроллером через интерфейс IPlaylistController.
+ * 
  * @see IPlaylistController
  */
-public class PlaylistGUI extends JFrame implements PropertyChangeListener {
-    private JList<IPlayable> songsList;
+public class PlaylistGUI extends javax.swing.JFrame implements PropertyChangeListener {
+    private JList<IPlayable> songList;
     private JTextArea songDataTextArea;
-    private JButton itemsButton;
+    private JPanel rootPanel;
+    private JButton itemButton;
 
     private IPlaylistController controller;
 
@@ -28,55 +32,69 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
     public PlaylistGUI() {
         super("Playlist");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 600);
+        setSize(800, 600); 
+        setContentPane(this.createPanel());
         setLocationRelativeTo(null);
-
-        // Создание и настройка компонентов
-        initComponents();
     }
 
-    /**
-     * Инициализация компонентов GUI.
-     */
-    private void initComponents() {
-        // Основная панель с GridLayout (2 строки, 2 столбца)
-        JPanel rootPanel = new JPanel(new GridLayout(2, 2, -1, -1));
-        rootPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        // JTextArea для отображения данных о песне
-        songDataTextArea = new JTextArea("NO DATA");
-        songDataTextArea.setBackground(new Color(0xE1E1E1)); // Цвет фонa
+    private JPanel createPanel() {
+        rootPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        // устанавливаем font и текст панели
+        songDataTextArea = new JTextArea();
+        songDataTextArea.setText("NO DATA");
+        songDataTextArea.setFont(new java.awt.Font("Yu Gothic UI", 1, 18));
         songDataTextArea.setEditable(false);
-        songDataTextArea.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-        songDataTextArea.setForeground(Color.WHITE);
+
         songDataTextArea.setLineWrap(true);
-        JPanel textAreaPanel = new JPanel(new BorderLayout());
-        textAreaPanel.add(new JScrollPane(songDataTextArea), BorderLayout.CENTER);
-        rootPanel.add(textAreaPanel);
+        
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        JScrollPane songDataScrollPane = new JScrollPane(songDataTextArea);
+        rootPanel.add(songDataScrollPane, constraints);
+        
 
-        // JList для отображения списка песен
-        songsList = new JList<>();
-        songsList.setBackground(new Color(0xFEEDED)); // Цвет фона
-        songsList.setForeground(Color.WHITE);
-        songsList.setSelectionBackground(new Color(0xE1E1E1));
-        songsList.setSelectionForeground(Color.WHITE);
-        JScrollPane scrollPane = new JScrollPane(songsList);
-        rootPanel.add(scrollPane);
+        // устанавливаем лист
+        songList = new JList<>();
 
-        // Кнопка для отображения количества элементов
-        itemsButton = new JButton("Items: N/A");
-        itemsButton.setEnabled(true);
-        itemsButton.setFocusPainted(false);
-        itemsButton.setFocusable(false);
-        itemsButton.setFont(new Font("Yu Gothic UI", Font.PLAIN, 18));
-        itemsButton.setHorizontalAlignment(SwingConstants.CENTER);
-        itemsButton.setRolloverEnabled(true);
-        rootPanel.add(itemsButton);
+        songList.setForeground(new java.awt.Color(0xFFFFFF));
+        songList.setBackground(new java.awt.Color(0x1faee9));
+        songList.setSelectionBackground(new java.awt.Color(0x025669));
+        songList.setSelectionForeground(new java.awt.Color(0xFFFFFF));
 
-        // Установка основной панели в окно
-        setContentPane(rootPanel);
-    }
+       
+        JScrollPane scrollPane = new JScrollPane(songList);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        rootPanel.add(scrollPane, constraints);
 
+        // добавляем кнопку
+        itemButton = new JButton("Items: N/A");
+
+        itemButton = new JButton();
+        itemButton.setText("Items: N/A");
+        itemButton.setFont(new java.awt.Font("Yu Gothic UI", 3, 18));
+
+        itemButton.setRolloverEnabled(true);
+        itemButton.setFocusPainted(false);
+        itemButton.setHorizontalAlignment(JButton.CENTER);
+
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        rootPanel.add(itemButton, constraints);
+
+        return rootPanel;
+    }    
     /**
      * Устанавливает контроллер.
      * Интерфейс IPlaylistController обеспечивает связь между контроллером и GUI.
@@ -84,9 +102,9 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
      */
     public void setController(IPlaylistController controller) {
         this.controller = controller;
-        songsList.addListSelectionListener(evt -> {
+        songList.addListSelectionListener(evt -> {
             if (evt.getValueIsAdjusting()) {
-                controller.handleSelectedItem(songsList.getSelectedValue());
+                controller.handleSelectedItem(songList.getSelectedValue());
             }
         });
     }
@@ -101,17 +119,19 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
     /**
      * Устанавливает модель списка. Метод используется контроллером для обновления содержимого списка.
      * @param listModel новая модель списка
-     * @see org.gp3.PlaylistController#handlePlaylistChange()
+     * 
+     * @see PlaylistController#handlePlaylistChange()
      */
     public void setListModel(DefaultListModel<IPlayable> listModel) {
-        songsList.setModel(listModel);
+        songList.setModel(listModel);
     }
 
     /**
      * Обновляет поле с информацией о текущем треке.
      * Используется контроллером при выборе нового трека.
+     * 
      * @param infoText информация о текущем треке
-     * @see org.gp3.PlaylistController#handleSelectedItem(IPlayable)
+     * @see PlaylistController#handleSelectedItem(IPlayable)
      */
     public void setSongDataText(String infoText) {
         songDataTextArea.setText(infoText);
@@ -119,22 +139,23 @@ public class PlaylistGUI extends JFrame implements PropertyChangeListener {
 
     /**
      * Обновляет текст кнопки с количеством элементов в очереди воспроизведения.
+     * 
      * @param text новый текст кнопки
      */
-    public void setItemsButtonText(String text) {
-        itemsButton.setText(text);
+    public void setItemButtonText(String text) {
+        itemButton.setText(text);
     }
 
     /**
      * Метод обработки события изменения свойства контроллера.
-     * @param evt A PropertyChangeEvent object describing the event source
-     *          and the property that has changed.
+     * 
+     * @param evt A PropertyChangeEvent object describing the event source and the property that has changed.
      */
-    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
-        if ("newSong".equals(propertyName)) {
-            controller.handlePlaylistChange();
+        switch(propertyName) {
+            case "newSong": // обновить listModel
+                controller.handlePlaylistChange(); break;
         }
     }
 }
