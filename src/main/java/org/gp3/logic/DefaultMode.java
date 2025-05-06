@@ -1,4 +1,4 @@
-package org.gp3;
+package org.gp3.logic;
 
 public class DefaultMode implements PlayMode {
     private final IPlayer audioPlayer;

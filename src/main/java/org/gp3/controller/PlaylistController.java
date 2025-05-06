@@ -1,7 +1,10 @@
-package org.gp3;
+package org.gp3.controller;
 
 import org.gp3.gui.PlaylistGUI;
-import org.gp3.parse.SongMetadata;
+import org.gp3.logic.IPlayable;
+import org.gp3.logic.IPlayer;
+import org.gp3.logic.PlayQueue;
+import org.gp3.parsing.SongMetadata;
 
 import javax.swing.*;
 

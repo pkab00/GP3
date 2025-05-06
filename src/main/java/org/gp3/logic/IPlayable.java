@@ -1,6 +1,6 @@
-package org.gp3;
+package org.gp3.logic;
 
-import org.gp3.parse.SongMetadata;
+import org.gp3.parsing.SongMetadata;
 
 public interface IPlayable {
     String getFilePath();

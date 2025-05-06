@@ -1,4 +1,4 @@
-package org.gp3.parse;
+package org.gp3.parsing;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.*;

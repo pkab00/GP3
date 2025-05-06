@@ -1,4 +1,4 @@
-package org.gp3;
+package org.gp3.logic;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.gp3;
+package org.gp3.utils;
 
 public interface TwoWayIterator<T> {
     boolean hasNext();

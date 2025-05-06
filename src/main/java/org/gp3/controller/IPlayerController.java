@@ -1,4 +1,4 @@
-package org.gp3;
+package org.gp3.controller;
 
 import java.io.File;
 

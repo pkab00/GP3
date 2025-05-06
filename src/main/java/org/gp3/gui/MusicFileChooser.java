@@ -1,9 +1,10 @@
 package org.gp3.gui;
 
-import org.gp3.SongLoader;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.gp3.logic.SongLoader;
+
 import java.awt.*;
 
 /**

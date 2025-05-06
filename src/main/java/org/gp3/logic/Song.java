@@ -1,9 +1,9 @@
-package org.gp3;
-
-import org.gp3.parse.SmartParser;
-import org.gp3.parse.SongMetadata;
+package org.gp3.logic;
 
 import java.nio.file.*;
+
+import org.gp3.parsing.SmartParser;
+import org.gp3.parsing.SongMetadata;
 
 /**
  * Класс, содержащий информацию о песне и реализующий интерфейс IPlayable.

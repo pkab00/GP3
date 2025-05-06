@@ -1,8 +1,13 @@
-package org.gp3;
+package org.gp3.controller;
 
 import org.gp3.gui.MusicFileChooser;
 import org.gp3.gui.PlaylistGUI;
 import org.gp3.gui.ProgressGUI;
+import org.gp3.logic.AudioPlayer;
+import org.gp3.logic.IPlayable;
+import org.gp3.logic.IPlayer;
+import org.gp3.logic.SongLoader;
+import org.gp3.utils.Callback;
 
 import java.io.File;
 import java.util.ArrayList;

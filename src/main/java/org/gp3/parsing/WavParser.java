@@ -1,4 +1,4 @@
-package org.gp3.parse;
+package org.gp3.parsing;
 
 import java.io.File;
 import java.io.FileInputStream;

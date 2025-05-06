@@ -1,8 +1,8 @@
 package org.gp3.gui;
 
-import org.gp3.IPlayable;
-import org.gp3.IPlaylistController;
-import org.gp3.PlaylistController;
+import org.gp3.controller.IPlaylistController;
+import org.gp3.controller.PlaylistController;
+import org.gp3.logic.IPlayable;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

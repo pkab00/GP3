@@ -1,9 +1,10 @@
-package org.gp3;
+package org.gp3.logic;
 
 import javafx.application.Platform;
 import javafx.scene.media.*;
 import javafx.embed.swing.*;
 import javafx.util.Duration;
+
 import org.gp3.gui.PlayerGUI;
 
 import java.beans.PropertyChangeListener;

@@ -1,6 +1,8 @@
-package org.gp3;
+package org.gp3.logic;
 
 import java.util.List;
+
+import org.gp3.utils.CycledIterator;
 
 /**
  * Итератор для переключения режимов воспроизведения.

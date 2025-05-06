@@ -1,6 +1,9 @@
-package org.gp3;
+package org.gp3.logic;
 
 import javax.swing.*;
+
+import org.gp3.utils.Callback;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
