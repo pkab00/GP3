@@ -1,6 +1,5 @@
 package org.gp3.gui;
 
-import org.gp3.*;
 import org.gp3.controller.IPlayerController;
 import org.gp3.logic.DefaultMode;
 import org.gp3.logic.IPlayable;

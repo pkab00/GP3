@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Main {
+    @SuppressWarnings("unused")
     private static ArrayList<IPlayable> setUpPlaylist(){
         ArrayList<IPlayable> playlist = new ArrayList<>();
         File playlistFolder = new File("src/test/test_audio");
