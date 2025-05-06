@@ -1,4 +1,4 @@
-package org.gp3.logic;
+package org.gp3.core;
 
 public class RepeatAllMode implements PlayMode {
     private final IPlayer audioPlayer;
@@ -16,9 +16,7 @@ public class RepeatAllMode implements PlayMode {
             }
             audioPlayer.play();
         } else {
-            System.out.println("AudioPlayer: Moving to next song...");
-            audioPlayer.toNext();
-            audioPlayer.play();
+            new DefaultMode(audioPlayer).nextSong(); // используем поведение DefaultMode
         }
     }
 }

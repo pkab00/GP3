@@ -1,4 +1,4 @@
-package org.gp3.logic;
+package org.gp3.core;
 
 import javafx.application.Platform;
 import javafx.scene.media.*;

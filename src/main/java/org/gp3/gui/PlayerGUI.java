@@ -1,12 +1,12 @@
 package org.gp3.gui;
 
 import org.gp3.controller.IPlayerController;
-import org.gp3.logic.DefaultMode;
-import org.gp3.logic.IPlayable;
-import org.gp3.logic.IPlayer;
-import org.gp3.logic.PlayMode;
-import org.gp3.logic.RepeatAllMode;
-import org.gp3.logic.RepeatOneMode;
+import org.gp3.core.DefaultMode;
+import org.gp3.core.IPlayable;
+import org.gp3.core.IPlayer;
+import org.gp3.core.PlayMode;
+import org.gp3.core.RepeatAllMode;
+import org.gp3.core.RepeatOneMode;
 import org.gp3.parsing.SongMetadata;
 
 import javax.swing.*;

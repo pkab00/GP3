@@ -1,4 +1,4 @@
-package org.gp3.logic;
+package org.gp3.core;
 
 import org.gp3.parsing.SongMetadata;
 

@@ -14,33 +14,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.2</version>
-                <configuration>
-                    <additionalOptions>
-                        <!-- Отключаем проверку модулей -->
-                        <additionalOption>-Xdoclint:none</additionalOption>
-                        <!-- Игнорируем конфликты пакетов -->
-                        <additionalOption>-quiet</additionalOption>
-                    </additionalOptions>
-                    <source>17</source>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
             <!-- Основная библиотека Tika -->
             <dependency>

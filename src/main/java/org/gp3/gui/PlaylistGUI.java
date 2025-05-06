@@ -2,7 +2,7 @@ package org.gp3.gui;
 
 import org.gp3.controller.IPlaylistController;
 import org.gp3.controller.PlaylistController;
-import org.gp3.logic.IPlayable;
+import org.gp3.core.IPlayable;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

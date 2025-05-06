@@ -1,4 +1,4 @@
-package org.gp3.logic;
+package org.gp3.core;
 
 public interface PlayMode extends Runnable {
     void nextSong();

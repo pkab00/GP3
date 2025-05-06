@@ -34,6 +34,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### IDEA ###
+.idea/
+
 ### Mac OS ###
 .DS_Store
 
@@ -41,3 +44,6 @@ build/
 src/test/test_audio
 *.mp3
 *.wav
+
+### TODO ###
+TODO.md

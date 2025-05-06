@@ -1,10 +1,10 @@
 package org.gp3;
 
 import org.gp3.controller.PlayerController;
+import org.gp3.core.AudioPlayer;
+import org.gp3.core.IPlayable;
+import org.gp3.core.Song;
 import org.gp3.gui.PlayerGUI;
-import org.gp3.logic.AudioPlayer;
-import org.gp3.logic.IPlayable;
-import org.gp3.logic.Song;
 
 import java.io.File;
 import java.util.ArrayList;
