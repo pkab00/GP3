@@ -22,6 +22,7 @@ public class Song implements IPlayable {
         Path path = Paths.get(filePath);
         if (!Files.exists(path)) {
             System.out.println("File not found: " + filePath);
+            this.filePath = null;
             return;
         }
         this.filePath = filePath;

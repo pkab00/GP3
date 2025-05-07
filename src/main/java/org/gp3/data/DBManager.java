@@ -1,10 +1,21 @@
 package org.gp3.data;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.gp3.core.IPlayable;
 import org.gp3.core.PlayQueue;
+import org.gp3.core.Song;
 
+/**
+ * Класс, который управляет БД, хранящей информацию 
+ * о плейлистах.
+ * Самый низкий уровень работы с БД. 
+ * Задействуется в controller-ах и worker-ах.
+ * 
+ * @see DBLoader
+ */
 public class DBManager {
     private final String DB_NAME = "__PLAYLISTS__";
     private Connection conn;
@@ -72,6 +83,73 @@ public class DBManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Возвращает список {@link IPlayable} из указанной таблицы,
+     * содержащий информацию о песнях, которые есть в плейлисте.
+     * @param playlistName имя плейлиста
+     * @return список {@link IPlayable} или {@code null} если при получении данных произошла ошибка
+     */
+    public ArrayList<IPlayable> getPlaylist(String playlistName){
+        ArrayList<IPlayable> output = new ArrayList<>();
+        try {
+            prep = conn.prepareStatement(String.format("SELECT path FROM %s ORDER BY id", 
+                                        playlistName));
+            ResultSet res = prep.executeQuery();
+            while(res.next()){
+                String path = res.getString("path");
+                IPlayable song = new Song(path);
+                if(song.getFilePath() != null){
+                    output.add(song);
+                } else{
+                    removeRecordByPath(playlistName, path);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return output;
+    }
+
+    /**
+     * Удаляет запись с указанным путем из указанной таблицы.
+     * @param playlistName имя плейлиста
+     * @param path путь к файлу песни
+     * @return {@code true} если удаление прошло успешно, {@code false} в противном случае
+     */
+    private boolean removeRecordByPath(String playlistName, String path) {
+        try {
+            String statement = String.format("DELETE FROM %s WHERE path = ?", playlistName);
+            prep = conn.prepareStatement(statement);
+            prep.setString(1, path);
+            int rowsAffected = prep.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Возвращает список имён существующих плейлистов.
+     * @return список имён плейлистов
+     */
+    public List<String> getPlaylistNames(){
+        List<String> output = new ArrayList<>();
+        try {
+            String statement = String.format("SELECT name FROM %s", DB_NAME);
+            prep = conn.prepareStatement(statement);
+            ResultSet res = prep.executeQuery();
+            while(res.next()){
+                String name = res.getString("name");
+                output.add(name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return output;
     }
 
     /**
