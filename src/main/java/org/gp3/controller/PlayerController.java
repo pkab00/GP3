@@ -5,7 +5,7 @@ import org.gp3.core.IPlayable;
 import org.gp3.core.IPlayer;
 import org.gp3.core.SongLoader;
 import org.gp3.gui.MusicFileChooser;
-import org.gp3.gui.PlaylistGUI;
+import org.gp3.gui.PlayQueueGUI;
 import org.gp3.gui.ProgressGUI;
 import org.gp3.utils.Callback;
 
@@ -134,12 +134,12 @@ public class PlayerController implements IPlayerController {
 
     /**
      * Обработка открытия окна просмотра плейлиста.
-     * @see org.gp3.gui.PlaylistGUI PlaylistGUI
+     * @see org.gp3.gui.PlayQueueGUI PlaylistGUI
      */
     @Override
-    public void handlePlaylistView() {
-        PlaylistGUI gui = new PlaylistGUI();
-        PlaylistController controller = new PlaylistController(audioPlayer, gui);
+    public void handlePlayQueueView() {
+        PlayQueueGUI gui = new PlayQueueGUI();
+        PlayQueueController controller = new PlayQueueController(audioPlayer, gui);
         controller.handlePlaylistChange();
         gui.setController(controller);
         gui.showScreen();

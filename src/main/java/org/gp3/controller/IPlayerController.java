@@ -14,5 +14,5 @@ public interface IPlayerController {
     void handleSongSlider(int newPosition, int oldPosition);
     void handlePlayMode();
     void handleFilesSelection(File[] selectedFiles);
-    void handlePlaylistView();
+    void handlePlayQueueView();
 }

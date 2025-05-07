@@ -3,7 +3,7 @@ package org.gp3.controller;
 import org.gp3.core.IPlayable;
 import org.gp3.core.IPlayer;
 import org.gp3.core.PlayQueue;
-import org.gp3.gui.PlaylistGUI;
+import org.gp3.gui.PlayQueueGUI;
 import org.gp3.parsing.SongMetadata;
 
 import javax.swing.*;
@@ -11,18 +11,18 @@ import javax.swing.*;
 /**
  * Контроллер для окна с очередью воспроизведения.
  * Аналогично {@link PlayerController}, связывает модель и внешнее представление.
- * Реализует {@link IPlaylistController}.
+ * Реализует {@link IPlayQueueController}.
  */
-public class PlaylistController implements IPlaylistController {
+public class PlayQueueController implements IPlayQueueController {
     private final IPlayer player;
-    private final PlaylistGUI playlistGUI;
+    private final PlayQueueGUI playlistGUI;
 
     /**
      * Конструктор контроллера очереди воспроизведения.
      * @param player модель плеера
      * @param gui окно очереди воспроизведения
      */
-    public PlaylistController(IPlayer player, PlaylistGUI gui) {
+    public PlayQueueController(IPlayer player, PlayQueueGUI gui) {
         this.player = player;
         this.playlistGUI = gui;
         player.addPCL(gui);

@@ -1,7 +1,7 @@
 package org.gp3.gui;
 
-import org.gp3.controller.IPlaylistController;
-import org.gp3.controller.PlaylistController;
+import org.gp3.controller.IPlayQueueController;
+import org.gp3.controller.PlayQueueController;
 import org.gp3.core.IPlayable;
 
 import javax.swing.*;
@@ -15,21 +15,21 @@ import java.awt.GridBagConstraints;
  * Не влияет на сам процесс воспроизведения, только визуально отображает очередь.
  * Взаимодействует с контроллером через интерфейс IPlaylistController.
  * 
- * @see IPlaylistController
+ * @see IPlayQueueController
  */
-public class PlaylistGUI extends javax.swing.JFrame implements PropertyChangeListener {
+public class PlayQueueGUI extends javax.swing.JFrame implements PropertyChangeListener {
     private JList<IPlayable> songList;
     private JTextArea songDataTextArea;
     private JPanel rootPanel;
     private JButton itemButton;
 
-    private IPlaylistController controller;
+    private IPlayQueueController controller;
 
     /**
      * Конструктор по умолчанию.
      * Отображает окно с пустой информацией.
      */
-    public PlaylistGUI() {
+    public PlayQueueGUI() {
         super("Playlist");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600); 
@@ -100,7 +100,7 @@ public class PlaylistGUI extends javax.swing.JFrame implements PropertyChangeLis
      * Интерфейс IPlaylistController обеспечивает связь между контроллером и GUI.
      * @param controller объект контроллера
      */
-    public void setController(IPlaylistController controller) {
+    public void setController(IPlayQueueController controller) {
         this.controller = controller;
         songList.addListSelectionListener(evt -> {
             if (evt.getValueIsAdjusting()) {
@@ -120,7 +120,7 @@ public class PlaylistGUI extends javax.swing.JFrame implements PropertyChangeLis
      * Устанавливает модель списка. Метод используется контроллером для обновления содержимого списка.
      * @param listModel новая модель списка
      * 
-     * @see PlaylistController#handlePlaylistChange()
+     * @see PlayQueueController#handlePlaylistChange()
      */
     public void setListModel(DefaultListModel<IPlayable> listModel) {
         songList.setModel(listModel);
@@ -131,7 +131,7 @@ public class PlaylistGUI extends javax.swing.JFrame implements PropertyChangeLis
      * Используется контроллером при выборе нового трека.
      * 
      * @param infoText информация о текущем треке
-     * @see PlaylistController#handleSelectedItem(IPlayable)
+     * @see PlayQueueController#handleSelectedItem(IPlayable)
      */
     public void setSongDataText(String infoText) {
         songDataTextArea.setText(infoText);
