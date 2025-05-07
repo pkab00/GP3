@@ -292,6 +292,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
                     "GP3 Player", JOptionPane.INFORMATION_MESSAGE);
         });
         playQueueItem.addActionListener(e -> controller.handlePlayQueueView()); // выводим окно просмотра плейлиста
+        saveAsPlaylistItem.addActionListener(e -> controller.handleSaveAsPlaylist());
     }
 
     /**

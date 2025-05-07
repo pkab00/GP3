@@ -73,7 +73,16 @@ public class PlayQueue implements TwoWayIterator<IPlayable>{
      * @return копия текущего объекта
      */
     @Override
-    public TwoWayIterator<IPlayable> copy() {
+    public PlayQueue copy() {
         return new PlayQueue(lst, position);
+    }
+
+    /**
+     * Создание копии текущего объекта для безопасной итерации, но
+     * начиная с начала очереди.
+     * @return копия текущего объекта
+     */
+    public PlayQueue copyFromFirst(){
+        return new PlayQueue(lst, -1);
     }
 }

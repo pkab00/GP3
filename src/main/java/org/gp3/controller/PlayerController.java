@@ -4,6 +4,7 @@ import org.gp3.core.AudioPlayer;
 import org.gp3.core.IPlayable;
 import org.gp3.core.IPlayer;
 import org.gp3.core.SongLoader;
+import org.gp3.data.DBManager;
 import org.gp3.gui.MusicFileChooser;
 import org.gp3.gui.PlayQueueGUI;
 import org.gp3.gui.ProgressGUI;
@@ -11,6 +12,8 @@ import org.gp3.utils.Callback;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 /**
  * Промежуточное звено между плеером и его интерфейсом.
@@ -143,5 +146,31 @@ public class PlayerController implements IPlayerController {
         controller.handlePlaylistChange();
         gui.setController(controller);
         gui.showScreen();
+    }
+
+    /**
+     * Диалоговое окно для сохранения текущего плейлиста.
+     * Пользователь вводит имя плейлиста, после чего происходит
+     * попытка его сохранения в базу данных с помощью {@link DBManager}.
+     * Если сохранение успешно, то выводится соответствующее сообщение,
+     * иначе - ошибка.
+     */
+    @Override
+    public void handleSaveAsPlaylist() {
+        String playlistName = JOptionPane.showInputDialog("Введите название плейлиста");
+        if(playlistName.isBlank()) return;
+
+        DBManager dbManager = new DBManager();
+        boolean success = dbManager.addNewRecord(playlistName, audioPlayer.getQueue().copyFromFirst());
+
+        if(success){
+            JOptionPane.showMessageDialog(null,
+            "Текуший плейлист сохранён как \""+playlistName+"\".",
+            "Успех", JOptionPane.PLAIN_MESSAGE);
+        } else{
+            JOptionPane.showMessageDialog(null,
+            "Не удалось сохранить плейлист. Возможно, плейлист с таким именем уже существует.",
+            "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
