@@ -16,4 +16,5 @@ public interface IPlayerController {
     void handleFilesSelection(File[] selectedFiles);
     void handlePlayQueueView();
     void handleSaveAsPlaylist();
+    void handleOpenPlaylistGUI();
 }

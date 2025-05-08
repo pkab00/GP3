@@ -7,6 +7,7 @@ import org.gp3.core.SongLoader;
 import org.gp3.data.DBManager;
 import org.gp3.gui.MusicFileChooser;
 import org.gp3.gui.PlayQueueGUI;
+import org.gp3.gui.PlaylistMenuGUI;
 import org.gp3.gui.ProgressGUI;
 import org.gp3.utils.Callback;
 
@@ -172,5 +173,14 @@ public class PlayerController implements IPlayerController {
                 "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    /**
+     * Открывает окно меню управления плейлистами.
+     */
+    @Override
+    public void handleOpenPlaylistGUI() {
+        PlaylistMenuGUI gui = new PlaylistMenuGUI();
+        gui.showScreen();
     }
 }

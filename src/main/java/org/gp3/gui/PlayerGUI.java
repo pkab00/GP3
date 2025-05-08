@@ -293,6 +293,7 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         });
         playQueueItem.addActionListener(e -> controller.handlePlayQueueView()); // выводим окно просмотра плейлиста
         saveAsPlaylistItem.addActionListener(e -> controller.handleSaveAsPlaylist());
+        openPlaylistMenuItem.addActionListener(e -> controller.handleOpenPlaylistGUI());
     }
 
     /**
