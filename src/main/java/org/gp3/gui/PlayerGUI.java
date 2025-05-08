@@ -284,7 +284,6 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
             File[] files = chooser.getSelectedFiles(); // получаем выбранные файлы
             if(files.length != 0) { // если файлы выбраны
                 controller.handleFilesSelection(files); // передаем их контроллеру
-                lockInterface(false); // разблокируем интерфейс
             }});
         infoItem.addActionListener(e -> {
             JOptionPane.showMessageDialog(this,
@@ -412,6 +411,13 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
             case "playMode":
                 PlayMode playMode = (PlayMode) evt.getNewValue();
                 updatePlayModeButton(playMode);
+                break;
+            case "playlist":
+                int numOfSongs = (Integer)evt.getNewValue();
+                if(numOfSongs > 0) lockInterface(false);
+                break;
+            default:
+                System.out.println("Unsupported property change called: "+evt.getPropertyName());
         }
     }
 }

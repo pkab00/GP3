@@ -104,7 +104,9 @@ public class AudioPlayer implements IPlayer {
     public void setPlaylist(ArrayList<IPlayable> playlist){
         this.playQueue = new PlayQueue(playlist);
         this.current = playQueue.next(); // Устанавливаем первый трек в качестве текущего
+        notifyPlaylistChange(playlist); // Уведомляем слушателей о смене плейлиста
         System.out.println("AudioPlayer: Playlist set!");
+        play();
     }
 
     /**
@@ -368,6 +370,15 @@ public class AudioPlayer implements IPlayer {
      */
     public void notifyPlayModeChange(PlayMode playMode){
         support.firePropertyChange("playMode", null, playMode);
+    }
+
+/**
+ * Уведомляет слушателей об изменении плейлиста.
+ * Передаёт новое количество элементов в плейлисте.
+ * @param playlist текущий плейлист
+ */
+    public void notifyPlaylistChange(ArrayList<IPlayable> playlist){
+        support.firePropertyChange("playlist", null, playlist.size());
     }
 
     /**
