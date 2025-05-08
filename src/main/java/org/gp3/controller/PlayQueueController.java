@@ -15,7 +15,7 @@ import javax.swing.*;
  */
 public class PlayQueueController implements IPlayQueueController {
     private final IPlayer player;
-    private final PlayQueueGUI playlistGUI;
+    private final PlayQueueGUI playQueueGUI;
 
     /**
      * Конструктор контроллера очереди воспроизведения.
@@ -24,7 +24,7 @@ public class PlayQueueController implements IPlayQueueController {
      */
     public PlayQueueController(IPlayer player, PlayQueueGUI gui) {
         this.player = player;
-        this.playlistGUI = gui;
+        this.playQueueGUI = gui;
         player.addPCL(gui);
     }
 
@@ -42,8 +42,8 @@ public class PlayQueueController implements IPlayQueueController {
             listModel.addElement(playable);
             itemsCounter++;
         }
-        playlistGUI.setListModel(listModel);
-        playlistGUI.setItemButtonText("Items : " + itemsCounter); // отображаем количество элементов очереди
+        playQueueGUI.setListModel(listModel);
+        playQueueGUI.setItemButtonText("Items : " + itemsCounter); // отображаем количество элементов очереди
     }
 
     /**
@@ -54,6 +54,6 @@ public class PlayQueueController implements IPlayQueueController {
     @Override
     public void handleSelectedItem(IPlayable playable) {
         SongMetadata metadata = playable.getMetadata();
-        playlistGUI.setSongDataText(metadata.toString());
+        playQueueGUI.setSongDataText(metadata.toString());
     }
 }

@@ -1,6 +1,11 @@
 package org.gp3.gui;
 
+import java.awt.BorderLayout;
+import java.util.List;
+
 import javax.swing.*;
+
+import org.gp3.controller.IPlaylistController;
 
 /**
  * Класс, представляющий графический интерфейс для управления плейлистами.
@@ -9,9 +14,11 @@ import javax.swing.*;
  * о текущем выбранном плейлисте. 
 
  */
-public class PlaylistMenuGUI extends JFrame {
+public class PlaylistMenuGUI extends JFrame implements IPlaylistMenuGUI {
     private JList<String> playlistList;
     private JTextArea playlistDataZone;
+    private JButton loadButton;
+    private JButton cancelButton;
     
     public PlaylistMenuGUI() {
         setTitle("Мои плейлисты");
@@ -40,7 +47,62 @@ public class PlaylistMenuGUI extends JFrame {
         playlistDataZone.setEditable(false);
         splitPane.setRightComponent(new JScrollPane(playlistDataZone));
 
+        JPanel buttonPanel = new JPanel();
+        loadButton = new JButton("Загрузить");
+        cancelButton = new JButton("Отмена");
+        buttonPanel.add(loadButton);
+        buttonPanel.add(cancelButton);
+        
+        add(buttonPanel, BorderLayout.SOUTH);
+
         add(splitPane);
+    }
+
+    /**
+     * Устанавливает контроллер.
+     * @param controller объект контроллера
+     */
+    public void setController(IPlaylistController controller){
+        controller.handleAviablePlaylistsUpdate();
+        playlistList.addListSelectionListener(e -> controller.handleItemSelection());
+        loadButton.addActionListener(e -> controller.handleLoadingPlaylist());
+        cancelButton.addActionListener(e -> dispose());
+    }
+
+    /**
+     * Устанавливает список имён плейлистов, доступных 
+     * для выбора. 
+     * @param names список имён плейлистов
+     */
+    @Override
+    public void updatePlaylistNames(List<String> playlistNames){
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for(String name : playlistNames){
+            model.addElement(name);
+        }
+        playlistList.setModel(model);
+    }
+
+    /**
+     * Возвращает имя выбранного плейлиста или null,
+     * если выбор не сделан.
+     * @return имя выбранного плейлиста
+     */
+    @Override
+    public String getSelectedPlaylistName(){
+        return playlistList.getSelectedValue();
+    }
+
+    /**
+     * Устанавливает текст, отображаемый в правой
+     * части интерфейса, описывающий выбранный
+     * плейлист.
+     * @param data текст, отображаемый в правой
+     *             части интерфейса
+     */
+    @Override
+    public void updatePlaylistData(String data){
+        playlistDataZone.setText(data);
     }
 
 /**

@@ -153,6 +153,28 @@ public class DBManager implements AutoCloseable {
     }
 
     /**
+     * Возвращает список путей к трекам указанного плейлиста.
+     * @param playlistName имя плейлиста
+     * @return список путей к трекам или {@code null} если при получении данных произошла ошибка
+     */
+    public List<String> getPlaylistPaths(String playlistName){
+        List<String> output = new ArrayList<>();
+        try {
+            String statement = String.format("SELECT path FROM %s", playlistName);
+            prep = conn.prepareStatement(statement);
+            ResultSet res = prep.executeQuery();
+            while(res.next()){
+                String path = res.getString("path");
+                output.add(path);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return output;
+    }
+
+    /**
      * Закрывает соединение с БД.
      * @see java.sql.Connection#close()
      * @see java.lang.AutoCloseable#close()

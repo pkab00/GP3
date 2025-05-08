@@ -181,6 +181,7 @@ public class PlayerController implements IPlayerController {
     @Override
     public void handleOpenPlaylistGUI() {
         PlaylistMenuGUI gui = new PlaylistMenuGUI();
+        gui.setController(new PlaylistController(gui, audioPlayer));
         gui.showScreen();
     }
 }
