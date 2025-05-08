@@ -16,7 +16,7 @@ import org.gp3.core.Song;
  * 
  * @see DBLoader
  */
-public class DBManager {
+public class DBManager implements AutoCloseable {
     private final String DB_NAME = "__PLAYLISTS__";
     private Connection conn;
     private PreparedStatement prep;
@@ -155,7 +155,9 @@ public class DBManager {
     /**
      * Закрывает соединение с БД.
      * @see java.sql.Connection#close()
+     * @see java.lang.AutoCloseable#close()
      */
+    @Override
     public void close(){
         try {
             conn.close();

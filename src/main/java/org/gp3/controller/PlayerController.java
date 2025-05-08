@@ -160,17 +160,17 @@ public class PlayerController implements IPlayerController {
         String playlistName = JOptionPane.showInputDialog("Введите название плейлиста");
         if(playlistName.isBlank()) return;
 
-        DBManager dbManager = new DBManager();
-        boolean success = dbManager.addNewRecord(playlistName, audioPlayer.getQueue().copyFromFirst());
-
-        if(success){
-            JOptionPane.showMessageDialog(null,
-            "Текуший плейлист сохранён как \""+playlistName+"\".",
-            "Успех", JOptionPane.PLAIN_MESSAGE);
-        } else{
-            JOptionPane.showMessageDialog(null,
-            "Не удалось сохранить плейлист. Возможно, плейлист с таким именем уже существует.",
-            "Ошибка", JOptionPane.ERROR_MESSAGE);
+        try(DBManager dbManager = new DBManager()){
+            boolean success = dbManager.addNewRecord(playlistName, audioPlayer.getQueue().copyFromFirst());
+            if(success){
+                JOptionPane.showMessageDialog(null,
+                "Текуший плейлист сохранён как \""+playlistName+"\".",
+                "Успех", JOptionPane.PLAIN_MESSAGE);
+            } else{
+                JOptionPane.showMessageDialog(null,
+                "Не удалось сохранить плейлист. Возможно, плейлист с таким именем уже существует.",
+                "Ошибка", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 }
