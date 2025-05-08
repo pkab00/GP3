@@ -3,6 +3,11 @@ package org.gp3.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 import org.gp3.core.IPlayable;
 import org.gp3.core.IPlayer;
 import org.gp3.data.DBLoader;
@@ -55,20 +60,30 @@ public class PlaylistController implements IPlaylistController {
     * Использует {@link DBLoader} для загрузки очереди воспроизведения,
     * после чего отображает информацию о загруженном плейлисте
     * с помощью метода updatePlaylistData.
-    * TODO: использовать ProgressGUI
     */
     @Override
     public void handleLoadingPlaylist() {
         DBLoader loader = new DBLoader(gui.getSelectedPlaylistName(), new Callback<Void,ArrayList<IPlayable>>() {
+            JDialog dialog;
             @Override
             public void onStarted() {
-                return; // TODO: ПРИМЕНИТЬ ЗДЕСЬ ProgressGUI
+                SwingUtilities.invokeLater(new Runnable() { // оборачиваем метод в invokeLater()
+                    @Override                               // таким образом гарантируем, что он
+                    public void run() {                     // выполнится в графическом потоке Swing
+                        JOptionPane jop = new JOptionPane("Загрузка плейлиста...",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+                        dialog = jop.createDialog((JFrame)gui, "Загрузка");
+                        dialog.setVisible(true);
+                    }
+                });
             }
             @Override
             public void onProgress(Void progress) {}
             @Override
             public void onFinished(ArrayList<IPlayable> parameter) {
                 player.setPlaylist(parameter);
+                dialog.dispose();
+                ((JFrame)gui).dispose();
             }
         });
         loader.execute();
