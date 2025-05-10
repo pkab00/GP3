@@ -12,7 +12,8 @@ public class SmartParser implements IParser{
     private final Map<String, Class<? extends IParser>> AVAILABLE_PARSERS =
             Map.of(
                     ".mp3", Mp3Parser.class, // .mp3
-                    ".wav", WavParser.class // .wav
+                    ".wav", WavParser.class, // .wav
+                    ".flac", FlacParser.class // .flac
             );
 
     /**

@@ -14,7 +14,8 @@ import java.awt.*;
 public class MusicFileChooser extends JFileChooser {
     private final String[][] FILTERS = {
             {"mp3", "MP3 files (*.mp3)"},
-            {"wav", "WAV files (*.wav)"}
+            {"wav", "WAV files (*.wav)"},
+            {"flac", "FLAC files (*.flac)"}
     };
 
     /**
