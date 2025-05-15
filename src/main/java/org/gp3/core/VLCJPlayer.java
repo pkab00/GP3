@@ -4,15 +4,20 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.gp3.gui.PlayerGUI;
 
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 
 public class VLCJPlayer implements IPlayer, IMediaObservable {
     private PlayQueue queue;
     private MediaPlayer mediaPlayer;
     private IPlayable current;
+    private Timer timer;
     
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private final PlayModeIterator playModeIterator;
@@ -20,6 +25,8 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
 
     public VLCJPlayer(PlayerGUI gui) {
         addPCL(gui);
+        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
+    
         playModeIterator = new PlayModeIterator(
                 List.of(new DefaultMode(this),
                         new RepeatAllMode(this),
@@ -27,6 +34,29 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
         playMode = playModeIterator.next(); // Начинаем с режима по умолчанию
         setPlaylist(new ArrayList<>()); // По умолчанию - пустой плейлист
         System.out.println("VLCJPlayer: Setup finished!");
+    }
+
+    /**
+     * Инициализирует и создаёт таймер, раз в 0.5 секунды,
+     * сообщающий о необходимости, обновить компоненты UI.
+     */
+    public void startTimer(){
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                    notifyProgressChange();
+            }
+        };
+        timer.schedule(task, 0, 500); // Раз в 0.5 секунды
+    }
+
+    /**
+     * Останавливает и обнуляет таймер.
+     */
+    public void stopTimer(){
+        timer.cancel();
+        timer = null;
     }
 
     @Override
@@ -41,134 +71,144 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
 
     @Override
     public void notifyPlayChange() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notifyPlayChange'");
+        support.firePropertyChange(MediaEvents.PLAY_CHANGE, !isPlaying(), isPlaying());
     }
 
     @Override
     public void notifySongChange(IPlayable oldCurrent) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notifySongChange'");
+        support.firePropertyChange(MediaEvents.SONG_CHANGE, oldCurrent, current);
     }
 
     @Override
     public void notifyProgressChange() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notifyProgressChange'");
+        if (mediaPlayer == null || mediaPlayer.media() == null) return;
+
+        int duration = (int)mediaPlayer.media().info().duration() / 1000;
+        int current = (int)mediaPlayer.status().time() / 1000;
+        support.firePropertyChange(MediaEvents.PROGRESS_CHANGE, current, duration - current);
     }
 
     @Override
     public void notifyPlaylistChange(ArrayList<IPlayable> playlist) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notifyPlaylistChange'");
+        support.firePropertyChange(MediaEvents.PLAYLIST_CHANGE, null, playlist.size());
     }
 
     @Override
     public void notifyPlayModeChange(PlayMode playMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notifyPlayModeChange'");
+        support.firePropertyChange(MediaEvents.PLAY_MODE_CHANGE, null, playMode);
     }
 
     @Override
     public void play() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'play'");
+        mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            @Override
+            public void playing(MediaPlayer mediaPlayer) {
+                if(timer == null) startTimer();
+            }
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                if(timer != null) stopTimer();
+                stop();
+                playMode.nextSong();
+            }
+        });
+        mediaPlayer.media().play(current.getFilePath());
+        notifyPlayChange();
+        notifySongChange(null);
     }
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pause'");
+        mediaPlayer.controls().setPause(true);
+        notifyPlayChange();
     }
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resume'");
+        mediaPlayer.controls().setPause(false);
+        notifyPlayChange();
     }
 
     @Override
     public void rewind() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'rewind'");
+        mediaPlayer.controls().skipTime(-1000000);
+        notifyProgressChange();
     }
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stop'");
+        if(mediaPlayer.status().isPlaying()) mediaPlayer.controls().stop();
     }
 
     @Override
     public void toNext() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toNext'");
+        IPlayable oldCurrent = current;
+        current = queue.next();
+        notifySongChange(oldCurrent);
     }
 
     @Override
     public void toPrevious() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toPrevious'");
+        IPlayable oldCurrent = current;
+        current = queue.previous();
+        notifySongChange(oldCurrent);
     }
 
     @Override
     public void setPlaylist(ArrayList<IPlayable> playlist) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPlaylist'");
+        this.queue = new PlayQueue(playlist);
+        this.current = queue.next();
+        notifyPlaylistChange(playlist);
+        System.out.println("VLCJPlayer: Playlist set!");
     }
 
     @Override
     public void setVolume(double volume) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setVolume'");
+        mediaPlayer.audio().setVolume((int)volume);
     }
 
     @Override
-    public void setPosition(double position) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPosition'");
+    public void setPosition(double secDelta) {
+        double duration = mediaPlayer.media().info().duration();
+        double current = mediaPlayer.status().time();
+        double newTime = current + (secDelta * 1000);
+        newTime = Math.max(0, Math.min(newTime, duration));
+        mediaPlayer.controls().setTime((int)newTime);
     }
 
     @Override
     public void setPlayMode(PlayMode playMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPlayMode'");
+        this.playMode = playMode;
     }
 
     @Override
     public double getVolume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getVolume'");
+        return mediaPlayer.audio().volume();
     }
 
     @Override
     public PlayQueue getQueue() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getQueue'");
+        return queue;
     }
 
     @Override
     public double getPosition() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPosition'");
+        return mediaPlayer.status().time();
     }
 
     @Override
     public IPlayable getPlaying() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPlaying'");
+        return current;
     }
 
     @Override
     public PlayMode getPlayMode() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPlayMode'");
+        return playMode;
     }
 
     @Override
     public boolean isPlaying() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPlaying'");
+        return mediaPlayer.status().isPlaying();
     }
     
 }

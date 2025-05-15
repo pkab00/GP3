@@ -1,6 +1,5 @@
 package org.gp3.controller;
 
-import org.gp3.core.AudioPlayer;
 import org.gp3.core.IPlayable;
 import org.gp3.core.IPlayer;
 import org.gp3.core.SongLoader;
@@ -23,7 +22,7 @@ import javax.swing.JOptionPane;
 public class PlayerController implements IPlayerController {
     private final IPlayer audioPlayer;
 
-    public PlayerController(AudioPlayer audioPlayer) {
+    public PlayerController(IPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
     }
 

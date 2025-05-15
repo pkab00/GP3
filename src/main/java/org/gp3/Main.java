@@ -1,9 +1,11 @@
 package org.gp3;
 
 import org.gp3.controller.PlayerController;
-import org.gp3.core.AudioPlayer;
+
 import org.gp3.core.IPlayable;
+import org.gp3.core.IPlayer;
 import org.gp3.core.Song;
+import org.gp3.core.VLCJPlayer;
 import org.gp3.gui.PlayerGUI;
 
 import java.io.File;
@@ -24,7 +26,7 @@ public class Main {
 
     private static void setUpPlayer(){
         PlayerGUI gui = new PlayerGUI();
-        AudioPlayer player = new AudioPlayer(gui);
+        IPlayer player = new VLCJPlayer(gui);
         PlayerController controller = new PlayerController(player);
         gui.setController(controller);
     }
