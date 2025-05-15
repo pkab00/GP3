@@ -337,7 +337,7 @@ public class AudioPlayer implements IPlayer, IMediaObservable {
      */
     @Override
     public void notifyPlayChange(){
-        support.firePropertyChange("playing", !isPlaying(), isPlaying());
+        support.firePropertyChange(MediaEvents.PLAY_CHANGE, !isPlaying(), isPlaying());
     }
 
     /**
@@ -348,7 +348,7 @@ public class AudioPlayer implements IPlayer, IMediaObservable {
      */
     @Override
     public void notifySongChange(IPlayable oldCurrent){
-        support.firePropertyChange("newSong", oldCurrent, current);
+        support.firePropertyChange(MediaEvents.SONG_CHANGE, oldCurrent, current);
     }
 
     /**
@@ -364,7 +364,7 @@ public class AudioPlayer implements IPlayer, IMediaObservable {
 
         int duration = (int)mediaPlayer.getMedia().getDuration().toSeconds();
         int current = (int)mediaPlayer.getCurrentTime().toSeconds();
-        support.firePropertyChange("progress", current, duration - current);
+        support.firePropertyChange(MediaEvents.PROGRESS_CHANGE, current, duration - current);
     }
 
     /**
@@ -373,7 +373,7 @@ public class AudioPlayer implements IPlayer, IMediaObservable {
      */
     @Override
     public void notifyPlayModeChange(PlayMode playMode){
-        support.firePropertyChange("playMode", null, playMode);
+        support.firePropertyChange(MediaEvents.PLAY_MODE_CHANGE, null, playMode);
     }
 
 /**
@@ -383,7 +383,7 @@ public class AudioPlayer implements IPlayer, IMediaObservable {
  */
     @Override
     public void notifyPlaylistChange(ArrayList<IPlayable> playlist){
-        support.firePropertyChange("playlist", null, playlist.size());
+        support.firePropertyChange(MediaEvents.PLAYLIST_CHANGE, null, playlist.size());
     }
 
     /**

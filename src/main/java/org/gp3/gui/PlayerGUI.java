@@ -7,6 +7,7 @@ import org.gp3.core.IPlayer;
 import org.gp3.core.PlayMode;
 import org.gp3.core.RepeatAllMode;
 import org.gp3.core.RepeatOneMode;
+import org.gp3.core.IMediaObservable.MediaEvents;
 import org.gp3.parsing.SongMetadata;
 
 import javax.swing.*;
@@ -53,12 +54,21 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         setSize(750, 300);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setIconImage(new ImageIcon(getClass().getResource("/icons/icon.png")).getImage());
+        setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icons\\icon.png"));
 
         // Инициализация компонентов
         initComponents();
         setVisible(true);
         lockInterface(true);
+    }
+
+    /**
+     * Впомагательный метод загрузки медиа. Возвращает изображение иконки.
+     * @param iconName имя иконки
+     * @return изображение иконки
+     */
+    private Icon getIcon(String iconName) {
+        return new ImageIcon("src\\main\\resources\\icons\\" + iconName + ".png");
     }
 
     /**
@@ -124,61 +134,61 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         gbcButton.gridx = 0;
         gbcButton.gridy = 0;
         gbcButton.weightx = 0.0; // Не растягиваем по горизонтали
-        previousButton = new JButton(new ImageIcon(getClass().getResource("/icons/previous.png")));
+        previousButton = new JButton(getIcon("previous"));
         previousButton.setBorderPainted(false);
         previousButton.setContentAreaFilled(false);
         previousButton.setFocusPainted(false);
-        previousButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/previous_prs.png")));
+        previousButton.setPressedIcon(getIcon("previous_prs"));
         previousButton.setToolTipText("To previous song");
         buttonPanel.add(previousButton, gbcButton);
 
         // Кнопка "Перемотка назад"
         gbcButton.gridx = 1;
-        fastBackwardButton = new JButton(new ImageIcon(getClass().getResource("/icons/backward.png")));
+        fastBackwardButton = new JButton(getIcon("backward"));
         fastBackwardButton.setBorderPainted(false);
         fastBackwardButton.setContentAreaFilled(false);
         fastBackwardButton.setFocusPainted(false);
-        fastBackwardButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/backward_prs.png")));
+        fastBackwardButton.setPressedIcon(getIcon("backward_prs"));
         fastBackwardButton.setToolTipText("Jump back (-10 seconds)");
         buttonPanel.add(fastBackwardButton, gbcButton);
 
         // Кнопка "Play/Pause"
         gbcButton.gridx = 2;
-        playPauseButton = new JButton(new ImageIcon(getClass().getResource("/icons/play.png")));
+        playPauseButton = new JButton(getIcon("play"));
         playPauseButton.setBorderPainted(false);
         playPauseButton.setContentAreaFilled(false);
         playPauseButton.setFocusPainted(false);
-        playPauseButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/play_prs.png")));
+        playPauseButton.setPressedIcon(getIcon("pause_prs"));
         playPauseButton.setToolTipText("Play/Pause");
         buttonPanel.add(playPauseButton, gbcButton);
 
         // Кнопка "Перемотка вперед"
         gbcButton.gridx = 3;
-        jumpForwardButton = new JButton(new ImageIcon(getClass().getResource("/icons/forward.png")));
+        jumpForwardButton = new JButton(getIcon("forward"));
         jumpForwardButton.setBorderPainted(false);
         jumpForwardButton.setContentAreaFilled(false);
         jumpForwardButton.setFocusPainted(false);
-        jumpForwardButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/forward_prs.png")));
+        jumpForwardButton.setPressedIcon(getIcon("forward_prs"));
         jumpForwardButton.setToolTipText("Jump forward (+10 seconds)");
         buttonPanel.add(jumpForwardButton, gbcButton);
 
         // Кнопка "Следующий трек"
         gbcButton.gridx = 4;
-        nextButton = new JButton(new ImageIcon(getClass().getResource("/icons/next.png")));
+        nextButton = new JButton(getIcon("next"));
         nextButton.setBorderPainted(false);
         nextButton.setContentAreaFilled(false);
         nextButton.setFocusPainted(false);
-        nextButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/next_prs.png")));
+        nextButton.setPressedIcon(getIcon("next_prs"));
         nextButton.setToolTipText("To next song");
         buttonPanel.add(nextButton, gbcButton);
 
         // Кнопка смены режима воспроизведения
         gbcButton.gridx = 5;
-        playModeButton = new JButton(new ImageIcon(getClass().getResource("/icons/repeat_off.png")));
+        playModeButton = new JButton(getIcon("repeat_off"));
         playModeButton.setBorderPainted(false);
         playModeButton.setContentAreaFilled(false);
         playModeButton.setFocusPainted(false);
-        playModeButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/repeat_off_prs.png")));
+        playModeButton.setPressedIcon(getIcon("repeat_off_prs"));
         playModeButton.setToolTipText("Change play mode");
         buttonPanel.add(playModeButton, gbcButton);
 
@@ -324,9 +334,9 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         Arrays.stream(playPauseButton.getActionListeners()).forEach(playPauseButton::removeActionListener);
 
         // обновляем изображение и слушатель в соответствии с новым состоянием
-        String icon = isPlaying ? "pause.png" : "play.png";
+        String icon = isPlaying ? "pause" : "play";
         ActionListener listener = isPlaying ? (e -> controller.handlePause()) : (e -> controller.handleResume());
-        playPauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/"+icon)));
+        playPauseButton.setIcon(getIcon(icon));
         playPauseButton.addActionListener(listener);
     }
 
@@ -379,8 +389,8 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         );
 
         String desiredFileName = modeMap.get(playMode.getClass());
-        playModeButton.setIcon(new ImageIcon(getClass().getResource("/icons/"+desiredFileName+".png")));
-        playModeButton.setPressedIcon(new ImageIcon(getClass().getResource("/icons/"+desiredFileName+"_prs.png")));
+        playModeButton.setIcon(getIcon(desiredFileName));
+        playModeButton.setPressedIcon(getIcon(desiredFileName + "_prs"));
     }
 
     /**
@@ -394,13 +404,13 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         String propertyName = evt.getPropertyName();
 
         switch (propertyName) {
-            case "playing":
+            case MediaEvents.PLAY_CHANGE:
                 updatePlayback((boolean) evt.getNewValue());
                 break;
-            case "newSong":
+            case MediaEvents.SONG_CHANGE:
                 updateSongLabel((IPlayable) evt.getNewValue());
                 break;
-            case "progress":
+            case MediaEvents.PROGRESS_CHANGE:
                 Object position = evt.getOldValue();
                 Object duration = evt.getNewValue();
                 if (duration != null && position != null){
@@ -408,11 +418,11 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
                     updateSongSlider((int) position, (int) duration);
                 }
                 break;
-            case "playMode":
+            case MediaEvents.PLAY_MODE_CHANGE:
                 PlayMode playMode = (PlayMode) evt.getNewValue();
                 updatePlayModeButton(playMode);
                 break;
-            case "playlist":
+            case MediaEvents.PLAYLIST_CHANGE:
                 int numOfSongs = (Integer)evt.getNewValue();
                 if(numOfSongs > 0) lockInterface(false);
                 break;
