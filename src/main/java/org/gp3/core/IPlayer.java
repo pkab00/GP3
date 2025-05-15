@@ -1,6 +1,5 @@
 package org.gp3.core;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 public interface IPlayer {
@@ -23,7 +22,4 @@ public interface IPlayer {
     IPlayable getPlaying();
     PlayMode getPlayMode();
     boolean isPlaying();
-
-    void addPCL(PropertyChangeListener pcl);
-    void removePCL(PropertyChangeListener pcl);
 }

@@ -1,5 +1,6 @@
 package org.gp3.controller;
 
+import org.gp3.core.IMediaObservable;
 import org.gp3.core.IPlayable;
 import org.gp3.core.IPlayer;
 import org.gp3.core.PlayQueue;
@@ -25,7 +26,7 @@ public class PlayQueueController implements IPlayQueueController {
     public PlayQueueController(IPlayer player, PlayQueueGUI gui) {
         this.player = player;
         this.playQueueGUI = gui;
-        player.addPCL(gui);
+        ((IMediaObservable)player).addPCL(gui);
     }
 
     /**

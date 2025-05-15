@@ -16,7 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Логическое "ядро" приложения. Реализует интерфейс {@link IPlayer}.
+ * Логическое "ядро" приложения. Реализует интерфейсы {@link IPlayer} и {@link IMediaObservable}.
  * <ol>
  *     <li>Управляет воспроизведением аудиофайлов посредством инкапсуляции {@link MediaPlayer}</li>
  *     <li>Хранит информацию об очереди воспроизведения</li>
@@ -46,7 +46,7 @@ import java.util.TimerTask;
  * @see #addPCL(PropertyChangeListener)
  * @see #removePCL(PropertyChangeListener)
  */
-public class AudioPlayer implements IPlayer {
+public class AudioPlayer implements IPlayer, IMediaObservable {
     private static boolean jfxInitialized = false;
     private PlayQueue playQueue;
     private MediaPlayer mediaPlayer;
@@ -335,6 +335,7 @@ public class AudioPlayer implements IPlayer {
      * {@code oldValue} - старое значение isPlaying
      * {@code newValue} - новое значение isPlaying
      */
+    @Override
     public void notifyPlayChange(){
         support.firePropertyChange("playing", !isPlaying(), isPlaying());
     }
@@ -345,6 +346,7 @@ public class AudioPlayer implements IPlayer {
      * {@code oldValue} - старый трек
      * {@code newValue} - новый трек
      */
+    @Override
     public void notifySongChange(IPlayable oldCurrent){
         support.firePropertyChange("newSong", oldCurrent, current);
     }
@@ -356,6 +358,7 @@ public class AudioPlayer implements IPlayer {
      * {@code oldValue} - текущая позиция
      * {@code newValue} - оставшееся время (длительность - позиция)
      */
+    @Override
     public void notifyProgressChange(){
         if (mediaPlayer == null || mediaPlayer.getMedia() == null) return;
 
@@ -368,6 +371,7 @@ public class AudioPlayer implements IPlayer {
      * Уведомляет слушателей о смене режима воспроизведения.
      * @param playMode новый режим воспроизведения
      */
+    @Override
     public void notifyPlayModeChange(PlayMode playMode){
         support.firePropertyChange("playMode", null, playMode);
     }
@@ -377,6 +381,7 @@ public class AudioPlayer implements IPlayer {
  * Передаёт новое количество элементов в плейлисте.
  * @param playlist текущий плейлист
  */
+    @Override
     public void notifyPlaylistChange(ArrayList<IPlayable> playlist){
         support.firePropertyChange("playlist", null, playlist.size());
     }
