@@ -24,7 +24,7 @@ public class PlaylistMenuGUI extends JFrame implements IPlaylistMenuGUI {
         setTitle("Мои плейлисты");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600, 400);
-        initComponents();
+        initComponents(); 
     }
 
     /**
