@@ -7,6 +7,7 @@ import java.util.List;
 import org.gp3.core.IPlayable;
 import org.gp3.core.PlayQueue;
 import org.gp3.core.Song;
+import org.gp3.utils.HashUtil;
 
 /**
  * Класс, который управляет БД, хранящей информацию 
@@ -35,14 +36,16 @@ public class DBManager implements AutoCloseable {
      * @param queue текущий список воспроизвежения
      * @return {@code true} если добавление прошло успешно, {@code false} в противном случае
      */
-   public boolean addNewRecord(String playlistName, PlayQueue queue) {
-            try {
-                prep = conn.prepareStatement("INSERT INTO " + DB_NAME + " (name) VALUES (?)");
-                prep.setString(1, playlistName);
-                prep.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
+    public boolean addNewRecord(String playlistName, PlayQueue queue) {
+        String hash = HashUtil.sha256(playlistName);
+        try {
+            prep = conn.prepareStatement("INSERT INTO " + DB_NAME + " (hash, name) VALUES (?, ?)");
+            prep.setString(1, hash);
+            prep.setString(2, playlistName);
+            prep.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
         createNewPlaylist(playlistName);
         setPlaylistData(playlistName, queue);
@@ -55,9 +58,10 @@ public class DBManager implements AutoCloseable {
      * @param playlistName имя плейлиста
      */
     private void createNewPlaylist(String playlistName){
+        String hash = HashUtil.sha256(playlistName);
         try {
             prep = conn.prepareStatement(String.format(
-                "CREATE TABLE %s (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT NOT NULL);", playlistName));
+                "CREATE TABLE %s (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT NOT NULL);", hash));
             prep.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,11 +74,12 @@ public class DBManager implements AutoCloseable {
      * @param queue очередь воспроизведения
      */
     private void setPlaylistData(String playlistName, PlayQueue queue){
+        String hash = HashUtil.sha256(playlistName);
         while(queue.hasNext()){
             IPlayable song = queue.next();
             String path = song.getFilePath();
 
-            String statement = String.format("INSERT INTO %s (path) VALUES (?)", playlistName);
+            String statement = String.format("INSERT INTO %s (path) VALUES (?)", hash);
             try {
                 prep = conn.prepareStatement(statement);
                 prep.setString(1, path);
@@ -93,9 +98,9 @@ public class DBManager implements AutoCloseable {
      */
     public ArrayList<IPlayable> getPlaylist(String playlistName){
         ArrayList<IPlayable> output = new ArrayList<>();
+        String hash = HashUtil.sha256(playlistName);
         try {
-            prep = conn.prepareStatement(String.format("SELECT path FROM %s ORDER BY id", 
-                                        playlistName));
+            prep = conn.prepareStatement(String.format("SELECT path FROM %s ORDER BY id", hash));
             ResultSet res = prep.executeQuery();
             while(res.next()){
                 String path = res.getString("path");
@@ -120,8 +125,9 @@ public class DBManager implements AutoCloseable {
      * @return {@code true} если удаление прошло успешно, {@code false} в противном случае
      */
     private boolean removeRecordByPath(String playlistName, String path) {
+        String hash = HashUtil.sha256(playlistName);
         try {
-            String statement = String.format("DELETE FROM %s WHERE path = ?", playlistName);
+            String statement = String.format("DELETE FROM %s WHERE path = ?", hash);
             prep = conn.prepareStatement(statement);
             prep.setString(1, path);
             int rowsAffected = prep.executeUpdate();
@@ -159,8 +165,9 @@ public class DBManager implements AutoCloseable {
      */
     public List<String> getPlaylistPaths(String playlistName){
         List<String> output = new ArrayList<>();
+        String hash = HashUtil.sha256(playlistName);
         try {
-            String statement = String.format("SELECT path FROM %s", playlistName);
+            String statement = String.format("SELECT path FROM %s", hash);
             prep = conn.prepareStatement(statement);
             ResultSet res = prep.executeQuery();
             while(res.next()){
