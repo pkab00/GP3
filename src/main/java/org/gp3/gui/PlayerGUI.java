@@ -15,6 +15,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -53,7 +55,6 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         super("GP3 Player");
         setSize(750, 300);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icons\\icon.png"));
 
         // Инициализация компонентов
@@ -277,6 +278,14 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
      */
     public void setController(IPlayerController controller) {
         this.controller = controller;
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                controller.handleExit();
+                dispose();
+                System.exit(0);
+            }
+        });
         previousButton.addActionListener(e -> controller.handlePrevious());
         nextButton.addActionListener(e -> controller.handleNext());
         fastBackwardButton.addActionListener(e -> controller.handleJumpBackward());

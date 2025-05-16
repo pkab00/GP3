@@ -34,7 +34,7 @@ public class PlayQueueController implements IPlayQueueController {
      * Использует копию очереди воспроизведения для получения списка элементов, затем заполняет модель.
      */
     @Override
-    public void handlePlaylistChange() {
+    public void handleSongChange() {
         PlayQueue queue = (PlayQueue) player.getQueue().copy(); // создаём копию очереди
         DefaultListModel<IPlayable> listModel = new DefaultListModel<>();
         int itemsCounter = 0;

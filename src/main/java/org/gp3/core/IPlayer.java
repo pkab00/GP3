@@ -10,6 +10,7 @@ public interface IPlayer {
     void stop();
     void toNext();
     void toPrevious();
+    void release();
 
     void setPlaylist(ArrayList<IPlayable> playlist);
     void setVolume(double volume);

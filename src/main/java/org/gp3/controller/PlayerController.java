@@ -143,7 +143,7 @@ public class PlayerController implements IPlayerController {
     public void handlePlayQueueView() {
         PlayQueueGUI gui = new PlayQueueGUI();
         PlayQueueController controller = new PlayQueueController(audioPlayer, gui);
-        controller.handlePlaylistChange();
+        controller.handleSongChange();
         gui.setController(controller);
         gui.showScreen();
     }
@@ -182,5 +182,10 @@ public class PlayerController implements IPlayerController {
         PlaylistMenuGUI gui = new PlaylistMenuGUI();
         gui.setController(new PlaylistController(gui, audioPlayer));
         gui.showScreen();
+    }
+
+    @Override
+    public void handleExit() {
+        audioPlayer.release();
     }
 }

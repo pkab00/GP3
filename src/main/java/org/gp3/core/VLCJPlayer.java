@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.SwingUtilities;
+
 import org.gp3.gui.PlayerGUI;
 
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
@@ -33,11 +35,24 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
                         new RepeatOneMode(this)));
         playMode = playModeIterator.next(); // Начинаем с режима по умолчанию
         setPlaylist(new ArrayList<>()); // По умолчанию - пустой плейлист
+        mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            // установка обработчиков событий воспроизведения
+            @Override
+            public void playing(MediaPlayer mediaPlayer) { // начало воспроизведения
+                if(timer == null) startTimer();
+                notifyPlayChange();
+                notifySongChange(null);
+            }
+            @Override
+            public void finished(MediaPlayer mediaPlayer) { // конец воспроизведения
+                SwingUtilities.invokeLater(getPlayMode()::nextSong);
+            }
+        });
         System.out.println("VLCJPlayer: Setup finished!");
     }
 
     /**
-     * Инициализирует и создаёт таймер, раз в 0.5 секунды,
+     * Инициализирует и создаёт таймер, раз в секунду,
      * сообщающий о необходимости, обновить компоненты UI.
      */
     public void startTimer(){
@@ -45,10 +60,10 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                    notifyProgressChange();
+                notifyProgressChange();
             }
         };
-        timer.schedule(task, 0, 500); // Раз в 0.5 секунды
+        timer.schedule(task, 0, 1000); // Раз в 1 секунду
     }
 
     /**
@@ -100,21 +115,10 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
 
     @Override
     public void play() {
-        mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-            @Override
-            public void playing(MediaPlayer mediaPlayer) {
-                if(timer == null) startTimer();
-            }
-            @Override
-            public void finished(MediaPlayer mediaPlayer) {
-                if(timer != null) stopTimer();
-                stop();
-                playMode.nextSong();
-            }
-        });
+        if(isPlaying()) stop();
+        if(current == null) current = queue.next();
+        
         mediaPlayer.media().play(current.getFilePath());
-        notifyPlayChange();
-        notifySongChange(null);
     }
 
     @Override
@@ -142,22 +146,25 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
 
     @Override
     public void toNext() {
-        IPlayable oldCurrent = current;
-        current = queue.next();
-        notifySongChange(oldCurrent);
+        if(queue.hasNext()){
+            IPlayable oldCurrent = current;
+            current = queue.next();
+            notifySongChange(oldCurrent);
+        }
     }
 
     @Override
     public void toPrevious() {
-        IPlayable oldCurrent = current;
-        current = queue.previous();
-        notifySongChange(oldCurrent);
+        if(queue.hasPrevious()){
+            IPlayable oldCurrent = current;
+            current = queue.previous();
+            notifySongChange(oldCurrent);
+        }
     }
 
     @Override
     public void setPlaylist(ArrayList<IPlayable> playlist) {
         this.queue = new PlayQueue(playlist);
-        this.current = queue.next();
         notifyPlaylistChange(playlist);
         System.out.println("VLCJPlayer: Playlist set!");
     }
@@ -178,7 +185,9 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
 
     @Override
     public void setPlayMode(PlayMode playMode) {
-        this.playMode = playMode;
+        if(playMode != null) this.playMode = playMode;
+        else this.playMode = playModeIterator.next();
+        notifyPlayModeChange(this.playMode);
     }
 
     @Override
@@ -209,6 +218,11 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
     @Override
     public boolean isPlaying() {
         return mediaPlayer.status().isPlaying();
+    }
+
+    @Override
+    public void release() {
+        mediaPlayer.release();
     }
     
 }

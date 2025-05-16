@@ -2,6 +2,7 @@ package org.gp3.gui;
 
 import org.gp3.controller.IPlayQueueController;
 import org.gp3.controller.PlayQueueController;
+import org.gp3.core.IMediaObservable;
 import org.gp3.core.IPlayable;
 
 import javax.swing.*;
@@ -120,7 +121,7 @@ public class PlayQueueGUI extends javax.swing.JFrame implements PropertyChangeLi
      * Устанавливает модель списка. Метод используется контроллером для обновления содержимого списка.
      * @param listModel новая модель списка
      * 
-     * @see PlayQueueController#handlePlaylistChange()
+     * @see PlayQueueController#handleSongChange()
      */
     public void setListModel(DefaultListModel<IPlayable> listModel) {
         songList.setModel(listModel);
@@ -154,8 +155,8 @@ public class PlayQueueGUI extends javax.swing.JFrame implements PropertyChangeLi
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
         switch(propertyName) {
-            case "newSong": // обновить listModel
-                controller.handlePlaylistChange(); break;
+            case IMediaObservable.MediaEvents.SONG_CHANGE: // обновить listModel
+                controller.handleSongChange(); break;
         }
     }
 }

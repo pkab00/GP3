@@ -17,4 +17,5 @@ public interface IPlayerController {
     void handlePlayQueueView();
     void handleSaveAsPlaylist();
     void handleOpenPlaylistGUI();
+    void handleExit();
 }

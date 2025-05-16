@@ -403,4 +403,9 @@ public class AudioPlayer implements IPlayer, IMediaObservable {
     public void removePCL(PropertyChangeListener pcl) {
         support.removePropertyChangeListener(pcl);
     }
+
+    @Override
+    public void release() {
+        stop();
+    }
 }
