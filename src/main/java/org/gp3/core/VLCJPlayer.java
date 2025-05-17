@@ -25,6 +25,11 @@ public class VLCJPlayer implements IPlayer, IMediaObservable {
     private final PlayModeIterator playModeIterator;
     private PlayMode playMode;
 
+    static {
+        // установка пути к библиотеке vlc
+        System.setProperty("jna.library.path", "src\\main\\resources\\vlc");
+    }
+
     public VLCJPlayer(PlayerGUI gui) {
         addPCL(gui);
         mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();

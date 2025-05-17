@@ -49,6 +49,7 @@ public class PlaylistMenuGUI extends SuperGUI implements IPlaylistMenuGUI {
 
         JPanel buttonPanel = new JPanel();
         loadButton = new JButton("Загрузить");
+        loadButton.setEnabled(false);
         cancelButton = new JButton("Отмена");
         buttonPanel.add(loadButton);
         buttonPanel.add(cancelButton);
@@ -64,7 +65,7 @@ public class PlaylistMenuGUI extends SuperGUI implements IPlaylistMenuGUI {
      */
     public void setController(IPlaylistController controller){
         controller.handleAviablePlaylistsUpdate();
-        playlistList.addListSelectionListener(e -> controller.handleItemSelection());
+        playlistList.addListSelectionListener(e -> {controller.handleItemSelection(); loadButton.setEnabled(true);});
         loadButton.addActionListener(e -> controller.handleLoadingPlaylist());
         cancelButton.addActionListener(e -> dispose());
     }

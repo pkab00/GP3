@@ -14,7 +14,7 @@ public class ProgressGUI extends SuperGUI {
      * Конструктор окна прогресса.
      */
     public ProgressGUI() {
-        super("Processing songs...");
+        super("Загрузка...");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 450, 300);
         setResizable(false);
