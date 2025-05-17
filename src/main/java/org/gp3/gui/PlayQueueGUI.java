@@ -16,7 +16,7 @@ import java.awt.BorderLayout;
  * Взаимодействует с контроллером через интерфейс IPlaylistController.
  * @see IPlayQueueController
  */
-public class PlayQueueGUI extends JFrame implements PropertyChangeListener {
+public class PlayQueueGUI extends SuperGUI implements PropertyChangeListener {
     private JList<IPlayable> songList;
     private JTextArea songDataTextArea;
     private JPanel rootPanel;

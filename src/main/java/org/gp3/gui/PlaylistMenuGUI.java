@@ -14,14 +14,14 @@ import org.gp3.controller.IPlaylistController;
  * о текущем выбранном плейлисте. 
 
  */
-public class PlaylistMenuGUI extends JFrame implements IPlaylistMenuGUI {
+public class PlaylistMenuGUI extends SuperGUI implements IPlaylistMenuGUI {
     private JList<String> playlistList;
     private JTextArea playlistDataZone;
     private JButton loadButton;
     private JButton cancelButton;
     
     public PlaylistMenuGUI() {
-        setTitle("Мои плейлисты");
+        super("Мои плейлисты");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600, 400);
         initComponents(); 

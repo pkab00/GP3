@@ -31,13 +31,24 @@ public class DBManager implements AutoCloseable {
     }
 
     /**
+     * Вспомагательный метод хэширования.
+     * Использует алгоритм SHA256.
+     * @param playlistName имя плейлиста
+     * @return хэш
+     * @see HashUtil
+     */
+    private String getHash(String playlistName){
+        return HashUtil.sha256(playlistName);
+    }
+
+    /**
      * Добавляет новую запись в БД.
      * @param playlistName имя плейлиста
      * @param queue текущий список воспроизвежения
      * @return {@code true} если добавление прошло успешно, {@code false} в противном случае
      */
     public boolean addNewRecord(String playlistName, PlayQueue queue) {
-        String hash = HashUtil.sha256(playlistName);
+        String hash = getHash(playlistName);
         try {
             prep = conn.prepareStatement("INSERT INTO " + DB_NAME + " (hash, name) VALUES (?, ?)");
             prep.setString(1, hash);
@@ -58,7 +69,7 @@ public class DBManager implements AutoCloseable {
      * @param playlistName имя плейлиста
      */
     private void createNewPlaylist(String playlistName){
-        String hash = HashUtil.sha256(playlistName);
+        String hash = getHash(playlistName);
         try {
             prep = conn.prepareStatement(String.format(
                 "CREATE TABLE %s (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT NOT NULL);", hash));
@@ -74,7 +85,7 @@ public class DBManager implements AutoCloseable {
      * @param queue очередь воспроизведения
      */
     private void setPlaylistData(String playlistName, PlayQueue queue){
-        String hash = HashUtil.sha256(playlistName);
+        String hash = getHash(playlistName);
         while(queue.hasNext()){
             IPlayable song = queue.next();
             String path = song.getFilePath();
@@ -98,7 +109,7 @@ public class DBManager implements AutoCloseable {
      */
     public ArrayList<IPlayable> getPlaylist(String playlistName){
         ArrayList<IPlayable> output = new ArrayList<>();
-        String hash = HashUtil.sha256(playlistName);
+        String hash = getHash(playlistName);
         try {
             prep = conn.prepareStatement(String.format("SELECT path FROM %s ORDER BY id", hash));
             ResultSet res = prep.executeQuery();
@@ -125,7 +136,7 @@ public class DBManager implements AutoCloseable {
      * @return {@code true} если удаление прошло успешно, {@code false} в противном случае
      */
     private boolean removeRecordByPath(String playlistName, String path) {
-        String hash = HashUtil.sha256(playlistName);
+        String hash = getHash(playlistName);
         try {
             String statement = String.format("DELETE FROM %s WHERE path = ?", hash);
             prep = conn.prepareStatement(statement);
@@ -165,7 +176,7 @@ public class DBManager implements AutoCloseable {
      */
     public List<String> getPlaylistPaths(String playlistName){
         List<String> output = new ArrayList<>();
-        String hash = HashUtil.sha256(playlistName);
+        String hash = getHash(playlistName);
         try {
             String statement = String.format("SELECT path FROM %s", hash);
             prep = conn.prepareStatement(statement);

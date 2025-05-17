@@ -28,7 +28,7 @@ import java.util.Map;
  * <p>
  * <b>Перед использованием требует подключения контроллера, реализующего интерфейс {@link IPlayerController}.</b>
  */
-public class PlayerGUI extends JFrame implements PropertyChangeListener {
+public class PlayerGUI extends SuperGUI implements PropertyChangeListener {
     private JButton previousButton;
     private JButton nextButton;
     private JButton fastBackwardButton;
@@ -55,7 +55,6 @@ public class PlayerGUI extends JFrame implements PropertyChangeListener {
         super("GP3 Player");
         setSize(750, 300);
         setResizable(false);
-        setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icons\\icon.png"));
 
         // Инициализация компонентов
         initComponents();

@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Мини-окно для отображения прогресса добавления песен в плейлист.
  */
-public class ProgressGUI extends JFrame {
+public class ProgressGUI extends SuperGUI {
     private JProgressBar bar;
     private JLabel label;
 
@@ -14,7 +14,7 @@ public class ProgressGUI extends JFrame {
      * Конструктор окна прогресса.
      */
     public ProgressGUI() {
-        setTitle("Processing songs...");
+        super("Processing songs...");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 450, 300);
         setResizable(false);
